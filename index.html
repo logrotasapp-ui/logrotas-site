@@ -46,6 +46,9 @@
     transition:background .15s ease, transform .15s ease;
   }
   .nav a.cta:hover{background:var(--orange-deep);transform:translateY(-1px)}
+  .nav-right{display:flex;align-items:center;gap:18px}
+  .nav a.planos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
+  .nav a.planos:hover{color:var(--orange)}
 
   /* ---------- HERO ---------- */
   .hero{position:relative;background:var(--asphalt);color:#fff;padding:64px 0 92px;overflow:hidden}
@@ -197,7 +200,10 @@
 <header>
   <div class="wrap nav">
     <div class="logo">Log<b>Rotas</b></div>
-    <a href="/cadastro" class="cta">Começar grátis</a>
+    <div class="nav-right">
+      <a href="assinar.html" class="planos">Ver planos</a>
+      <a href="cadastro.html" class="cta">Começar grátis</a>
+    </div>
   </div>
 </header>
 
@@ -207,7 +213,7 @@
     <span class="eyebrow">Feito por motorista, pra motorista</span>
     <h1>Sua rota, seu controle. Seu frete, <span class="orange">no preço certo.</span></h1>
     <p class="sub">O LogRotas faz a conta que você não tem tempo de fazer na estrada: combustível, pedágio, distância e o valor justo do frete.</p>
-    <a href="/cadastro" class="btn">Começar grátis por 14 dias →</a>
+    <a href="cadastro.html" class="btn">Começar grátis por 14 dias →</a>
     <div class="reassure"><b>Sem cartão. Sem pegadinha.</b> É só testar.</div>
   </div>
 </section>
@@ -302,7 +308,7 @@
       </div>
     </div>
     <div class="center reveal">
-      <a href="/cadastro" class="btn">Quero meus 14 dias grátis →</a>
+      <a href="cadastro.html" class="btn">Quero meus 14 dias grátis →</a>
     </div>
   </div>
 </section>
@@ -313,7 +319,7 @@
     <div class="tag">Quem fez</div>
     <h2>Feito por motorista, pra motorista.</h2>
     <p>O LogRotas não nasceu num escritório. Nasceu na estrada, da mão de quem vive de dirigir e cansou de ver colega perdendo dinheiro por falta de ferramenta. Cada função foi pensada pra resolver um problema de verdade de quem está no volante.</p>
-    <a href="/cadastro" class="btn">Começar grátis por 14 dias →</a>
+    <a href="cadastro.html" class="btn">Começar grátis por 14 dias →</a>
   </div>
 </section>
 
@@ -327,8 +333,9 @@
       </div>
       <div>
         <h4>Navegue</h4>
-        <a href="/cadastro">Criar conta grátis</a>
-        <a href="/entrar">Entrar</a>
+        <a href="cadastro.html">Criar conta grátis</a>
+        <a href="assinar.html">Planos</a>
+        <a href="cadastro.html">Entrar</a>
         <a href="termos.html">Termos de Uso</a>
         <a href="privacidade.html">Política de Privacidade</a>
       </div>
