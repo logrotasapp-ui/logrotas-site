@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Planos e assinatura</title>
+<meta name="description" content="Escolha seu plano LogRotas. Comece grátis, assine quando quiser. Cancele a hora que precisar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
+    --paper:#F6F7F9;--ink:#1b2746;--mute:#616e90;--line:#e3e7ef;--white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
+  .wrap{width:100%;max-width:1000px;margin:0 auto;padding:0 22px}
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none}
+  .logo b{color:var(--orange)}
+
+  .hero{background:var(--asphalt);color:#fff;padding:46px 0 34px;text-align:center}
+  .hero h1{font-size:38px;font-weight:800;margin-bottom:10px}
+  .hero p{font-size:17px;color:#c5cde3;max-width:520px;margin:0 auto}
+
+  .planos{padding:40px 0 30px;display:grid;grid-template-columns:1fr;gap:20px}
+  @media(min-width:820px){.planos{grid-template-columns:repeat(3,1fr);align-items:start}}
+
+  .plano{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 24px;box-shadow:0 8px 24px rgba(21,34,74,.05);display:flex;flex-direction:column}
+  .plano.destaque{border:2px solid var(--orange);box-shadow:0 14px 36px rgba(237,106,44,.16);position:relative}
+  .selo{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;padding:5px 16px;border-radius:20px;white-space:nowrap}
+  .plano h3{font-size:25px;font-weight:700;margin-bottom:4px}
+  .plano .desc{color:var(--mute);font-size:14.5px;min-height:42px;margin-bottom:14px}
+  .preco{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px;color:var(--ink);line-height:1}
+  .preco small{font-size:16px;color:var(--mute);font-weight:600}
+  .preco-def{display:inline-block;background:#fff8f3;color:var(--orange-deep);font-weight:700;font-size:17px;padding:6px 14px;border-radius:8px;border:1px dashed var(--orange)}
+  .ul{list-style:none;margin:18px 0 22px;flex-grow:1}
+  .ul li{display:flex;gap:9px;align-items:flex-start;font-size:15px;margin-bottom:10px;color:var(--ink)}
+  .ul li svg{flex-shrink:0;width:18px;height:18px;fill:var(--orange);margin-top:3px}
+  .ul li.no{color:var(--mute)}
+  .ul li.no svg{fill:#c2c9d8}
+  .btn{display:block;text-align:center;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;padding:14px;border-radius:11px;transition:background .15s ease,transform .15s ease}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover{background:var(--orange-deep);transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:var(--asphalt);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+
+  .reassure{text-align:center;padding:10px 0 40px;color:var(--mute);font-size:15px}
+  .reassure b{color:var(--ink)}
+
+  .draft{background:#fff8f3;border:1px dashed var(--orange);border-radius:10px;padding:12px 14px;margin:0 auto 30px;max-width:1000px;font-size:13.5px;color:var(--orange-deep);text-align:center}
+
+  footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
+  footer a{color:#9aa6c6;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a href="index.html" class="logo">Log<b>Rotas</b></a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Escolha seu plano</h1>
+    <p>Comece grátis e assine quando quiser. Sem pegadinha: cancela a hora que precisar.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="planos">
+
+    <!-- GRÁTIS -->
+    <div class="plano">
+      <h3>Grátis</h3>
+      <div class="desc">Pra conhecer o LogRotas e usar a viagem completa.</div>
+      <div class="preco">R$ 0<small>/sempre</small></div>
+      <ul class="ul">
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Viagem completa</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Frete (uso limitado)</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Otimizador de Rotas (uso limitado)</li>
+      </ul>
+      <a href="cadastro.html" class="btn btn-ghost">Começar grátis</a>
+    </div>
+
+    <!-- FRETE -->
+    <div class="plano destaque">
+      <span class="selo">Mais escolhido</span>
+      <h3>Frete</h3>
+      <div class="desc">Pra quem vive de frete e quer cobrar certo todo dia.</div>
+      <div class="preco-def">R$ [A DEFINIR]/mês</div>
+      <ul class="ul">
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tudo do Grátis</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Calculadora de Frete sem limite</b></li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Sem anúncios nas calculadoras</li>
+        <li class="no"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg> Otimizador completo</li>
+      </ul>
+      <a href="#" class="btn btn-primary">Assinar Frete</a>
+    </div>
+
+    <!-- COMPLETO -->
+    <div class="plano">
+      <h3>Completo</h3>
+      <div class="desc">Pra quem faz muita entrega e precisa do otimizador.</div>
+      <div class="preco-def">R$ [A DEFINIR]/mês</div>
+      <ul class="ul">
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tudo do plano Frete</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Otimizador de Rotas sem limite</b></li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Todos os recursos liberados</li>
+      </ul>
+      <a href="#" class="btn btn-primary">Assinar Completo</a>
+    </div>
+
+  </div>
+
+  <p class="reassure">💳 Pagamento por Pix ou cartão · <b>assinatura mensal</b> · cancele quando quiser, sem multa.</p>
+</div>
+
+<div class="draft">⚙️ Página em construção — preços a definir no beta e botões de assinar entram na fase técnica (Asaas).</div>
+
+<footer>
+  <div class="wrap">
+    <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
+  </div>
+</footer>
+</body>
+</html>

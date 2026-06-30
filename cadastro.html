@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Criar conta · 14 dias grátis</title>
+<meta name="description" content="Crie sua conta no LogRotas e comece 14 dias grátis. Sem cartão pra testar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
+    --paper:#F6F7F9;--ink:#1b2746;--mute:#616e90;--line:#e3e7ef;--white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
+  .wrap{width:100%;max-width:480px;margin:0 auto;padding:0 22px}
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none}
+  .logo b{color:var(--orange)}
+
+  .hero{background:var(--asphalt);color:#fff;padding:40px 0 30px;text-align:center}
+  .hero h1{font-size:34px;font-weight:800;margin-bottom:8px}
+  .hero .trial{display:inline-block;background:var(--orange);border-radius:30px;padding:6px 18px;font-weight:700;font-size:15px;color:#fff;margin-top:6px}
+
+  .formcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;margin:30px auto 20px;box-shadow:0 10px 30px rgba(21,34,74,.06)}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-weight:600;font-size:15px;margin-bottom:6px;color:var(--ink)}
+  .field input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;font-family:'Barlow',sans-serif;font-size:16px;color:var(--ink);transition:border-color .15s ease}
+  .field input:focus{outline:none;border-color:var(--orange)}
+  .field .hint{font-size:13px;color:var(--mute);margin-top:5px}
+
+  .btn{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;letter-spacing:.02em;padding:16px;border-radius:12px;cursor:pointer;transition:background .15s ease,transform .15s ease;margin-top:6px}
+  .btn:hover{background:var(--orange-deep);transform:translateY(-1px)}
+  .terms{font-size:13px;color:var(--mute);text-align:center;margin-top:16px;line-height:1.5}
+  .terms a{color:var(--orange);text-decoration:none}
+  .login-link{text-align:center;font-size:15px;color:var(--mute);margin:18px 0 40px}
+  .login-link a{color:var(--orange);text-decoration:none;font-weight:600}
+
+  .draft{background:#fff8f3;border:1px dashed var(--orange);border-radius:10px;padding:12px 14px;margin:20px auto 0;max-width:480px;font-size:13.5px;color:var(--orange-deep);text-align:center}
+
+  footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
+  footer a{color:#9aa6c6;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a href="index.html" class="logo">Log<b>Rotas</b></a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Crie sua conta</h1>
+    <div class="trial">🎁 14 dias grátis · sem cartão</div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="formcard">
+    <div class="field">
+      <label for="nome">Nome completo</label>
+      <input type="text" id="nome" placeholder="Seu nome">
+    </div>
+    <div class="field">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" placeholder="seuemail@exemplo.com">
+      <div class="hint">Use o mesmo e-mail pra entrar no app depois.</div>
+    </div>
+    <div class="field">
+      <label for="whats">WhatsApp</label>
+      <input type="tel" id="whats" placeholder="(11) 90000-0000">
+      <div class="hint">Pra contato e suporte.</div>
+    </div>
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="Crie uma senha">
+    </div>
+    <button class="btn">Começar meus 14 dias grátis</button>
+    <p class="terms">Ao criar a conta, você concorda com os <a href="termos.html">Termos de Uso</a> e a <a href="privacidade.html">Política de Privacidade</a>.</p>
+  </div>
+  <p class="login-link">Já tem conta? <a href="#">Entrar</a></p>
+</div>
+
+<div class="draft">⚙️ Página em construção — os campos ainda não salvam. A ligação com o sistema entra na fase técnica.</div>
+
+<footer>
+  <div class="wrap">
+    <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
+  </div>
+</footer>
+</body>
+</html>
