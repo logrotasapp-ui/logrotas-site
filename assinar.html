@@ -32,8 +32,6 @@
   @media(min-width:820px){.planos{grid-template-columns:repeat(3,1fr);align-items:start}}
 
   .plano{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px 24px;box-shadow:0 8px 24px rgba(21,34,74,.05);display:flex;flex-direction:column}
-  .plano.destaque{border:2px solid var(--orange);box-shadow:0 14px 36px rgba(237,106,44,.16);position:relative}
-  .selo{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;padding:5px 16px;border-radius:20px;white-space:nowrap}
   .plano h3{font-size:25px;font-weight:700;margin-bottom:4px}
   .plano .desc{color:var(--mute);font-size:14.5px;min-height:42px;margin-bottom:14px}
   .preco{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px;color:var(--ink);line-height:1}
@@ -90,20 +88,21 @@
       <ul class="ul">
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Viagem completa</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Frete (uso limitado)</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Checklist de Veículos (uso limitado)</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Otimizador de Rotas (uso limitado)</li>
       </ul>
       <a href="cadastro.html" class="btn btn-ghost">Começar grátis</a>
     </div>
 
     <!-- FRETE -->
-    <div class="plano destaque">
-      <span class="selo">Mais escolhido</span>
+    <div class="plano">
       <h3>Frete</h3>
       <div class="desc">Pra quem vive de frete e quer cobrar certo todo dia.</div>
       <div class="preco-def">R$ [A DEFINIR]/mês</div>
       <ul class="ul">
-        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tudo do Grátis</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Viagem</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Calculadora de Frete sem limite</b></li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Checklist de Veículos sem limite</b></li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Sem anúncios nas calculadoras</li>
         <li class="no"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg> Otimizador completo</li>
       </ul>
@@ -116,7 +115,9 @@
       <div class="desc">Pra quem faz muita entrega e precisa do otimizador.</div>
       <div class="preco-def">R$ [A DEFINIR]/mês</div>
       <ul class="ul">
-        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tudo do plano Frete</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Viagem</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Frete sem limite</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Checklist de Veículos sem limite</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Otimizador de Rotas sem limite</b></li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Todos os recursos liberados</li>
       </ul>
