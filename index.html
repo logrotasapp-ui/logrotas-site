@@ -147,6 +147,20 @@
 
   /* ---------- ÂNCORA DE VALOR ---------- */
   .ancora{background:var(--white);padding:74px 0;text-align:center}
+  .gestao{background:var(--paper);padding:58px 0}
+  .gestao h2{text-align:center;font-size:30px;font-weight:800;color:var(--asphalt);margin-bottom:8px}
+  .gestao .sub{text-align:center;color:var(--mute);font-size:16px;max-width:520px;margin:0 auto 34px;padding:0 20px}
+  .gestao-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:900px;margin:0 auto;padding:0 20px}
+  @media(min-width:820px){.gestao-grid{grid-template-columns:repeat(4,1fr)}}
+  .gcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 18px;text-align:center;transition:transform .15s ease,box-shadow .15s ease}
+  .gcard:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(21,34,74,.1)}
+  .gcard .gico{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+  .gcard:nth-child(1) .gico{background:#e4f5ec}
+  .gcard:nth-child(2) .gico{background:#fdeecf}
+  .gcard:nth-child(3) .gico{background:#fbe7e7}
+  .gcard:nth-child(4) .gico{background:#e9eefb}
+  .gcard h3{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:5px}
+  .gcard p{font-size:14px;color:var(--mute);line-height:1.45}
   .ancora .big{font-weight:800;font-size:clamp(34px,7vw,60px);max-width:16ch;margin:0 auto 18px}
   .ancora .big .orange{color:var(--orange)}
   .ancora p{font-size:19px;color:var(--mute);max-width:50ch;margin:0 auto}
@@ -275,6 +289,36 @@
     <div class="tag">É guincheiro? Tem uma ferramenta só sua</div>
     <h2>Checklist de Veículo 🪝</h2>
     <p>Registra a coleta e a entrega com fotos, assinatura do cliente e tudo com data, hora e localização. Documentou a avaria na hora certa? <b>Tá protegido.</b> Um único problema bem documentado já evita uma dor de cabeça que custa caro.</p>
+  </div>
+</section>
+
+<!-- GESTÃO -->
+<section class="gestao">
+  <div class="wrap">
+    <h2 class="reveal">E ainda cuida do seu negócio</h2>
+    <p class="sub reveal">Rodar bem não é só calcular o frete. É saber quanto entra, quanto sai e não perder prazo de documento.</p>
+    <div class="gestao-grid">
+      <div class="gcard reveal">
+        <div class="gico">📊</div>
+        <h3>Financeiro</h3>
+        <p>Veja quanto ganhou e quanto gastou. O lucro na tela, sem planilha.</p>
+      </div>
+      <div class="gcard reveal">
+        <div class="gico">💸</div>
+        <h3>Despesas</h3>
+        <p>Registre cada gasto do dia a dia e saiba pra onde vai seu dinheiro.</p>
+      </div>
+      <div class="gcard reveal">
+        <div class="gico">🔧</div>
+        <h3>Manutenção</h3>
+        <p>Controle as trocas e revisões do veículo. Nada te pega de surpresa.</p>
+      </div>
+      <div class="gcard reveal">
+        <div class="gico">📄</div>
+        <h3>Documentos</h3>
+        <p>Cadastre os vencimentos e receba aviso antes de vencer. Sem multa por esquecimento.</p>
+      </div>
+    </div>
   </div>
 </section>
 
