@@ -39,6 +39,10 @@
   .btn:hover{background:var(--orange-deep);transform:translateY(-1px)}
   .terms{font-size:13px;color:var(--mute);text-align:center;margin-top:16px;line-height:1.5}
   .terms a{color:var(--orange);text-decoration:none}
+  .aceite{display:flex;align-items:flex-start;gap:10px;margin:4px 0 18px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+  .aceite input{width:20px;height:20px;flex-shrink:0;margin-top:1px;accent-color:var(--orange);cursor:pointer}
+  .aceite label{font-size:14px;color:var(--ink);line-height:1.45;cursor:pointer}
+  .aceite a{color:var(--orange);text-decoration:none;font-weight:600}
   .login-link{text-align:center;font-size:15px;color:var(--mute);margin:18px 0 40px}
   .login-link a{color:var(--orange);text-decoration:none;font-weight:600}
 
@@ -83,8 +87,11 @@
       <label for="senha">Senha</label>
       <input type="password" id="senha" placeholder="Crie uma senha">
     </div>
+    <div class="aceite">
+      <input type="checkbox" id="aceito">
+      <label for="aceito">Li e concordo com os <a href="termos.html">Termos de Uso</a> e a <a href="privacidade.html">Política de Privacidade</a>.</label>
+    </div>
     <a href="baixar.html" class="btn" style="display:block;text-align:center;text-decoration:none">Começar meus 14 dias grátis</a>
-    <p class="terms">Ao criar a conta, você concorda com os <a href="termos.html">Termos de Uso</a> e a <a href="privacidade.html">Política de Privacidade</a>.</p>
   </div>
   <p class="login-link">Já tem conta? <a href="#">Entrar</a></p>
 </div>
