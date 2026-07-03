@@ -36,7 +36,8 @@
 
   /* ---------- NAV ---------- */
   header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
-  .nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;position:relative}
+  .nav .logo{position:absolute;left:50%;transform:translateX(-50%)}
   .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;letter-spacing:.01em}
   .logo b{color:var(--orange);font-weight:800}
   .nav a.cta{
@@ -47,6 +48,24 @@
   }
   .nav a.cta:hover{background:var(--orange-deep);transform:translateY(-1px)}
   .nav-right{display:flex;align-items:center;gap:18px}
+  /* menu hambúrguer */
+  .burger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:42px;height:42px;background:rgba(255,255,255,.1);border:none;border-radius:10px;cursor:pointer;padding:0;flex-shrink:0}
+  .burger span{display:block;width:20px;height:2px;background:#fff;margin:0 auto;border-radius:2px;transition:.25s}
+  .nav-left{display:flex;align-items:center;gap:14px}
+  /* painel lateral */
+  .menu-overlay{position:fixed;inset:0;background:rgba(10,16,35,.5);opacity:0;visibility:hidden;transition:.25s;z-index:98}
+  .menu-overlay.open{opacity:1;visibility:visible}
+  .menu-panel{position:fixed;top:0;left:0;bottom:0;width:82%;max-width:320px;background:var(--asphalt);z-index:99;transform:translateX(-100%);transition:transform .28s ease;padding:22px;display:flex;flex-direction:column}
+  .menu-panel.open{transform:translateX(0)}
+  .menu-panel .mp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+  .menu-panel .mp-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;color:#fff}
+  .menu-panel .mp-logo b{color:var(--orange)}
+  .menu-panel .mp-close{background:none;border:none;color:#fff;font-size:26px;cursor:pointer;line-height:1;padding:0 4px}
+  .menu-panel a{color:#c5cde3;text-decoration:none;font-size:17px;font-weight:600;padding:14px 6px;border-bottom:1px solid rgba(255,255,255,.08);transition:color .15s}
+  .menu-panel a:hover{color:var(--orange)}
+  .menu-panel a.destaque{background:var(--orange);color:#fff;text-align:center;border-radius:11px;border:none;margin-top:16px;padding:14px}
+  .menu-panel a.destaque:hover{background:var(--orange-deep);color:#fff}
+  .menu-panel .mp-mini{margin-top:auto;font-size:13px;color:#7f8cae;padding-top:18px}
   .nav a.planos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
   .nav a.planos:hover{color:var(--orange)}
 
@@ -198,6 +217,18 @@
   .social svg{width:19px;height:19px;fill:#fff}
   .fbottom{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;font-size:14px;color:#7f8cae;text-align:center}
 
+  /* ---------- INDIQUE E GANHE ---------- */
+  .indique{background:var(--asphalt-2);padding:60px 0}
+  .indique-card{max-width:640px;margin:0 auto;text-align:center;padding:0 22px}
+  .indique .emoji{font-size:40px;margin-bottom:14px}
+  .indique h2{color:#fff;font-size:32px;font-weight:800;margin-bottom:12px}
+  .indique h2 .orange{color:var(--orange)}
+  .indique p{color:#c5cde3;font-size:17px;line-height:1.55;max-width:520px;margin:0 auto 18px}
+  .indique .destaque-num{color:#fff;font-weight:700}
+  .indique .btn-wpp{display:inline-flex;align-items:center;gap:9px;background:#25D366;color:#fff;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;padding:15px 28px;border-radius:12px;transition:transform .15s ease,box-shadow .15s ease;box-shadow:0 8px 22px rgba(37,211,102,.3)}
+  .indique .btn-wpp:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(37,211,102,.4)}
+  .indique .mini{color:#8f9bbd;font-size:13.5px;margin-top:14px}
+
   /* ---------- REVEAL ---------- */
   .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease, transform .6s ease}
   .reveal.in{opacity:1;transform:none}
@@ -213,13 +244,31 @@
 
 <header>
   <div class="wrap nav">
-    <div class="logo">Log<b>Rotas</b></div>
-    <div class="nav-right">
-      <a href="assinar.html" class="planos">Ver planos</a>
-      <a href="cadastro.html" class="cta">Começar grátis</a>
+    <div class="nav-left">
+      <button class="burger" onclick="document.getElementById('menuPanel').classList.add('open');document.getElementById('menuOverlay').classList.add('open')" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="logo">Log<b>Rotas</b></div>
     </div>
   </div>
 </header>
+
+<!-- MENU LATERAL -->
+<div class="menu-overlay" id="menuOverlay" onclick="document.getElementById('menuPanel').classList.remove('open');this.classList.remove('open')"></div>
+<nav class="menu-panel" id="menuPanel">
+  <div class="mp-top">
+    <span class="mp-logo">Log<b>Rotas</b></span>
+    <button class="mp-close" onclick="document.getElementById('menuPanel').classList.remove('open');document.getElementById('menuOverlay').classList.remove('open')" aria-label="Fechar menu">✕</button>
+  </div>
+  <a href="index.html">Início</a>
+  <a href="assinar.html">Planos</a>
+  <a href="cadastro.html">Criar conta grátis</a>
+  <a href="cadastro.html">Entrar</a>
+  <a href="termos.html">Termos de Uso</a>
+  <a href="privacidade.html">Política de Privacidade</a>
+  <a href="cadastro.html" class="destaque">Começar grátis →</a>
+  <div class="mp-mini">Sua rota, seu controle.</div>
+</nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -351,9 +400,17 @@
         <p>Faz login com o <b>mesmo e-mail</b> do cadastro. Pronto, tá liberado.</p>
       </div>
     </div>
-    <div class="center reveal">
-      <a href="cadastro.html" class="btn">Quero meus 14 dias grátis →</a>
-    </div>
+  </div>
+</section>
+
+<!-- INDIQUE E GANHE -->
+<section class="indique">
+  <div class="indique-card reveal">
+    <div class="emoji">🤝</div>
+    <h2>Indique e <span class="orange">ganhe dias grátis</span></h2>
+    <p>Conhece outro motorista que ia curtir o LogRotas? Chame pelo WhatsApp. Quando ele criar a conta, <span class="destaque-num">você ganha 30 dias grátis e ele ganha 14 dias</span> de acesso completo.</p>
+    <a href="cadastro.html" class="btn-wpp">📲 Convidar um parceiro</a>
+    <div class="mini">O convite vai pelo seu WhatsApp, direto pro seu amigo.</div>
   </div>
 </section>
 
@@ -374,14 +431,6 @@
       <div>
         <div class="logo">Log<b>Rotas</b></div>
         <div class="ftag">Sua rota, seu controle.</div>
-      </div>
-      <div>
-        <h4>Navegue</h4>
-        <a href="cadastro.html">Criar conta grátis</a>
-        <a href="assinar.html">Planos</a>
-        <a href="cadastro.html">Entrar</a>
-        <a href="termos.html">Termos de Uso</a>
-        <a href="privacidade.html">Política de Privacidade</a>
       </div>
       <div>
         <h4>Suporte</h4>
