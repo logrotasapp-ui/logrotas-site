@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Criar conta · 14 dias grátis</title>
+<meta name="description" content="Crie sua conta no LogRotas e comece 14 dias grátis. Sem cartão pra testar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
+    --paper:#F6F7F9;--ink:#1b2746;--mute:#616e90;--line:#e3e7ef;--white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
+  .wrap{width:100%;max-width:480px;margin:0 auto;padding:0 22px}
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none}
+  .logo b{color:var(--orange)}
+  .voltar{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
+  .voltar:hover{color:var(--orange)}
+
+  .hero{background:var(--asphalt);color:#fff;padding:40px 0 30px;text-align:center}
+  .hero h1{font-size:34px;font-weight:800;margin-bottom:8px}
+  .hero .trial{display:inline-block;background:var(--orange);border-radius:30px;padding:6px 18px;font-weight:700;font-size:15px;color:#fff;margin-top:6px}
+
+  .formcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;margin:30px auto 20px;box-shadow:0 10px 30px rgba(21,34,74,.06)}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-weight:600;font-size:15px;margin-bottom:6px;color:var(--ink)}
+  .field input,.field select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;font-family:'Barlow',sans-serif;font-size:16px;color:var(--ink);transition:border-color .15s ease;background:#fff}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--orange)}
+  .field .hint{font-size:13px;color:var(--mute);margin-top:5px}
+
+  .btn{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;letter-spacing:.02em;padding:16px;border-radius:12px;cursor:pointer;transition:background .15s ease,transform .15s ease;margin-top:6px}
+  .btn:hover:not(:disabled){background:var(--orange-deep);transform:translateY(-1px)}
+  .btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+  .feedback{border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:15px;line-height:1.45;display:none}
+  .feedback.error{display:block;background:#fff0f0;border:1px solid #f5b8b8;color:#8b1a1a}
+  .feedback.success{display:block;background:#f0faf4;border:1px solid #a8dfc0;color:#1a5c32}
+  .terms{font-size:13px;color:var(--mute);text-align:center;margin-top:16px;line-height:1.5}
+  .terms a{color:var(--orange);text-decoration:none}
+  .aceite{display:flex;align-items:flex-start;gap:10px;margin:4px 0 18px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+  .aceite input{width:20px;height:20px;flex-shrink:0;margin-top:1px;accent-color:var(--orange);cursor:pointer}
+  .aceite label{font-size:14px;color:var(--ink);line-height:1.45;cursor:pointer}
+  .aceite a{color:var(--orange);text-decoration:none;font-weight:600}
+  .login-link{text-align:center;font-size:15px;color:var(--mute);margin:18px 0 40px}
+  .login-link a{color:var(--orange);text-decoration:none;font-weight:600}
+
+  footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
+  footer a{color:#9aa6c6;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a href="index.html" class="voltar">← Início</a>
+    <a href="index.html" class="logo">Log<b>Rotas</b></a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Crie sua conta</h1>
+    <div class="trial">🎁 14 dias grátis · sem cartão</div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="formcard">
+    <form id="cadastroForm" novalidate>
+      <div id="feedback" class="feedback" role="alert" aria-live="polite"></div>
+
+      <div class="field">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" name="nome" placeholder="Seu nome" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required autocomplete="email">
+        <div class="hint">Use o mesmo e-mail pra entrar no app depois.</div>
+      </div>
+      <div class="field">
+        <label for="whats">WhatsApp</label>
+        <input type="tel" id="whats" name="telefone" placeholder="(11) 90000-0000" required autocomplete="tel">
+        <div class="hint">Pra contato e suporte.</div>
+      </div>
+      <div class="field">
+        <label for="tipoPerfil">Tipo de perfil</label>
+        <select id="tipoPerfil" name="tipoPerfil" required>
+          <option value="" disabled selected>Selecione seu perfil</option>
+          <option value="motorista">Motorista</option>
+          <option value="guincheiro">Guincheiro</option>
+          <option value="entregador">Entregador</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="codigoBeta">Código beta</label>
+        <input type="text" id="codigoBeta" name="codigoBeta" placeholder="Seu código de acesso" required autocomplete="off">
+        <div class="hint">Obrigatório para criar a conta no período beta.</div>
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Crie uma senha" required minlength="6" autocomplete="new-password">
+        <div class="hint">Mínimo de 6 caracteres.</div>
+      </div>
+      <div class="aceite">
+        <input type="checkbox" id="aceito" required>
+        <label for="aceito">Li e concordo com os <a href="termos.html">Termos de Uso</a> e a <a href="privacidade.html">Política de Privacidade</a>.</label>
+      </div>
+      <button type="submit" class="btn" id="btnSubmit">Começar meus 14 dias grátis</button>
+    </form>
+  </div>
+  <p class="login-link">Já tem conta? <a href="baixar.html">Baixar o app e entrar</a></p>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js';
+
+// Cole os valores do Firebase Console > Configurações do projeto > Seus apps > app Web
+const firebaseConfig = {
+  apiKey: 'AIzaSyDQgXb5Smvd0C8cslsq0WPIaahweH2Ox5E',
+  authDomain: 'logrotas-85e7e.firebaseapp.com',
+  projectId: 'logrotas-85e7e',
+  storageBucket: 'logrotas-85e7e.firebasestorage.app',
+  messagingSenderId: '404332371972',
+  appId: '1:404332371972:web:fb1234a8c8294536121551'
+};
+
+const form = document.getElementById('cadastroForm');
+const feedback = document.getElementById('feedback');
+const btnSubmit = document.getElementById('btnSubmit');
+
+function showFeedback(type, message) {
+  feedback.className = 'feedback ' + type;
+  feedback.textContent = message;
+}
+
+function clearFeedback() {
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+}
+
+function getFriendlyError(error) {
+  const code = error?.code || '';
+  const message = (error?.message || '').toLowerCase();
+  const details = typeof error?.details === 'string' ? error.details.toLowerCase() : '';
+  const combined = message + ' ' + details;
+
+  if (code === 'functions/invalid-argument' || combined.includes('invalid') || combined.includes('inválid') || combined.includes('required') || combined.includes('obrigat')) {
+    return 'Verifique os dados informados. Todos os campos são obrigatórios e devem estar corretos.';
+  }
+  if (combined.includes('beta') && (combined.includes('invalid') || combined.includes('inválid') || combined.includes('not found') || combined.includes('não encontr') || code === 'functions/not-found')) {
+    return 'Código beta inválido. Verifique o código e tente novamente.';
+  }
+  if (combined.includes('beta') && (combined.includes('used') || combined.includes('usado') || combined.includes('already') || combined.includes('já foi'))) {
+    return 'Este código beta já foi utilizado.';
+  }
+  if (combined.includes('telefone') || combined.includes('phone') || combined.includes('whatsapp')) {
+    return 'Este telefone já está cadastrado.';
+  }
+  if (combined.includes('email') && (combined.includes('exists') || combined.includes('use') || combined.includes('cadastrad') || combined.includes('already'))) {
+    return 'Este e-mail já está em uso.';
+  }
+  if (code === 'auth/email-already-in-use') {
+    return 'Este e-mail já está em uso.';
+  }
+  if (code === 'auth/weak-password') {
+    return 'A senha é muito fraca. Use pelo menos 6 caracteres.';
+  }
+  if (code === 'auth/invalid-email') {
+    return 'O e-mail informado não é válido.';
+  }
+  if (code === 'functions/unavailable' || code === 'functions/internal') {
+    return 'Serviço temporariamente indisponível. Tente novamente em alguns instantes.';
+  }
+
+  return 'Não foi possível criar a conta. Verifique os dados e tente novamente.';
+}
+
+function validateForm() {
+  const nome = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const telefone = document.getElementById('whats').value.trim();
+  const tipoPerfil = document.getElementById('tipoPerfil').value;
+  const codigoBeta = document.getElementById('codigoBeta').value.trim();
+  const senha = document.getElementById('senha').value;
+  const aceito = document.getElementById('aceito').checked;
+
+  if (!nome || !email || !telefone || !tipoPerfil || !codigoBeta || !senha) {
+    showFeedback('error', 'Preencha todos os campos obrigatórios.');
+    return null;
+  }
+  if (!aceito) {
+    showFeedback('error', 'Você precisa aceitar os Termos de Uso e a Política de Privacidade.');
+    return null;
+  }
+  if (senha.length < 6) {
+    showFeedback('error', 'A senha deve ter pelo menos 6 caracteres.');
+    return null;
+  }
+
+  return { nome, email, telefone, tipoPerfil, codigoBeta, senha };
+}
+
+const app = initializeApp(firebaseConfig);
+const functions = getFunctions(app, 'southamerica-east1');
+const registerWithBetaCode = httpsCallable(functions, 'registerWithBetaCode');
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  clearFeedback();
+
+  const data = validateForm();
+  if (!data) return;
+
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'Criando conta…';
+
+  try {
+    await registerWithBetaCode({
+      email: data.email,
+      senha: data.senha,
+      nome: data.nome,
+      telefone: data.telefone,
+      tipoPerfil: data.tipoPerfil,
+      codigoBeta: data.codigoBeta
+    });
+
+    form.reset();
+    showFeedback(
+      'success',
+      'Conta criada com sucesso! Baixe o app LogRotas e entre com seu e-mail e senha para começar seus 14 dias grátis.'
+    );
+  } catch (error) {
+    console.error('Erro no cadastro:', error);
+    showFeedback('error', getFriendlyError(error));
+  } finally {
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'Começar meus 14 dias grátis';
+  }
+});
+</script>
+</body>
+</html>

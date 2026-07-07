@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Sua rota, seu controle. Seu frete, no preço certo.</title>
+<meta name="description" content="O app que calcula combustível, pedágio, distância e o valor justo do frete. Feito por motorista, pra motorista. 14 dias grátis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;
+    --asphalt-2:#1c2c5e;
+    --orange:#ED6A2C;
+    --orange-deep:#cf551b;
+    --paper:#F6F7F9;
+    --ink:#1b2746;
+    --mute:#616e90;
+    --line:#e3e7ef;
+    --white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Barlow',system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Barlow Condensed',sans-serif;line-height:1.02;letter-spacing:-.01em}
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 22px}
+  .orange{color:var(--orange)}
+
+  /* ---------- NAV ---------- */
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;position:relative}
+  .nav .logo{position:absolute;left:50%;transform:translateX(-50%)}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;letter-spacing:.01em}
+  .logo b{color:var(--orange);font-weight:800}
+  .nav a.cta{
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;
+    background:var(--orange);color:#fff;text-decoration:none;
+    padding:9px 18px;border-radius:8px;letter-spacing:.02em;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .nav a.cta:hover{background:var(--orange-deep);transform:translateY(-1px)}
+  .nav-right{display:flex;align-items:center;gap:18px}
+  /* menu hambúrguer */
+  .burger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:42px;height:42px;background:rgba(255,255,255,.1);border:none;border-radius:10px;cursor:pointer;padding:0;flex-shrink:0}
+  .burger span{display:block;width:20px;height:2px;background:#fff;margin:0 auto;border-radius:2px;transition:.25s}
+  .nav-left{display:flex;align-items:center;gap:14px}
+  /* painel lateral */
+  .menu-overlay{position:fixed;inset:0;background:rgba(10,16,35,.5);opacity:0;visibility:hidden;transition:.25s;z-index:98}
+  .menu-overlay.open{opacity:1;visibility:visible}
+  .menu-panel{position:fixed;top:0;left:0;bottom:0;width:82%;max-width:320px;background:var(--asphalt);z-index:99;transform:translateX(-100%);transition:transform .28s ease;padding:22px;display:flex;flex-direction:column}
+  .menu-panel.open{transform:translateX(0)}
+  .menu-panel .mp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}
+  .menu-panel .mp-logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;color:#fff}
+  .menu-panel .mp-logo b{color:var(--orange)}
+  .menu-panel .mp-close{background:none;border:none;color:#fff;font-size:26px;cursor:pointer;line-height:1;padding:0 4px}
+  .menu-panel a{color:#c5cde3;text-decoration:none;font-size:17px;font-weight:600;padding:14px 6px;border-bottom:1px solid rgba(255,255,255,.08);transition:color .15s}
+  .menu-panel a:hover{color:var(--orange)}
+  .menu-panel a.destaque{background:var(--orange);color:#fff;text-align:center;border-radius:11px;border:none;margin-top:16px;padding:14px}
+  .menu-panel a.destaque:hover{background:var(--orange-deep);color:#fff}
+  .menu-panel .mp-mini{margin-top:auto;font-size:13px;color:#7f8cae;padding-top:18px}
+  .nav a.planos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
+  .nav a.planos:hover{color:var(--orange)}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;background:var(--asphalt);color:#fff;padding:64px 0 92px;overflow:hidden}
+  .hero::before{
+    /* faixa de asfalto / linha de fuga */
+    content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+    width:140%;height:240px;
+    background:radial-gradient(ellipse at 50% 130%, rgba(237,106,44,.18), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .wrap{position:relative;z-index:2}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    color:#aeb9d8;margin-bottom:20px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--orange);display:inline-block}
+  .hero h1{font-weight:800;font-size:clamp(42px,9vw,76px);color:#fff;max-width:14ch}
+  .hero h1 .orange{display:inline}
+  .hero p.sub{
+    font-size:clamp(17px,2.4vw,21px);color:#c9d2e8;max-width:46ch;
+    margin:22px 0 34px;line-height:1.5;
+  }
+  .btn{
+    display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:800;
+    font-size:22px;letter-spacing:.02em;text-decoration:none;text-align:center;
+    background:var(--orange);color:#fff;padding:16px 34px;border-radius:11px;
+    box-shadow:0 8px 22px rgba(237,106,44,.34);
+    transition:background .15s ease, transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{background:var(--orange-deep);transform:translateY(-2px);box-shadow:0 12px 28px rgba(237,106,44,.42)}
+  .hero .reassure{margin-top:14px;font-size:15px;color:#93a0c4;font-weight:500}
+  .hero .reassure b{color:#d7deef;font-weight:600}
+
+  /* ---------- ROUTE SPINE (assinatura) ---------- */
+  .route{position:relative}
+  .route::before{
+    content:"";position:absolute;top:0;bottom:0;left:31px;width:3px;
+    background:repeating-linear-gradient(var(--orange) 0 14px, transparent 14px 26px);
+    opacity:.85;
+  }
+  @media(min-width:760px){
+    .route::before{left:50%;transform:translateX(-50%)}
+  }
+
+  /* ---------- PROBLEMA ---------- */
+  .problema{background:var(--white);padding:66px 0 30px;position:relative;z-index:2}
+  .problema h2{font-weight:800;font-size:clamp(30px,5.4vw,46px);max-width:18ch;margin-bottom:18px}
+  .problema p{font-size:18px;color:var(--mute);max-width:54ch}
+  .problema p + p{margin-top:16px}
+  .problema strong{color:var(--ink);font-weight:600}
+
+  /* ---------- MÓDULOS (paradas na rota) ---------- */
+  .modulos{background:var(--white);padding:30px 0 20px}
+  /* Mobile: tudo empilhado, pino e linha à esquerda */
+  .parada{position:relative;padding:26px 0 26px 70px;max-width:640px;margin:0 auto}
+  .parada-img{margin-top:18px;max-width:440px}
+  .parada-img img{display:block;width:100%;height:auto}
+  .img-framed{border-radius:14px;box-shadow:0 10px 26px rgba(21,34,74,.14)}
+  .img-clean{border-radius:10px}
+  .pin{
+    position:absolute;left:20px;top:30px;width:26px;height:26px;border-radius:50%;
+    background:var(--orange);border:4px solid var(--white);
+    box-shadow:0 0 0 2px var(--orange);z-index:3;
+  }
+  /* Desktop: card de um lado da rota, imagem do outro */
+  @media(min-width:760px){
+    .parada{display:flex;align-items:center;gap:0;max-width:1000px;padding-left:0;min-height:60px}
+    .parada .card{width:calc(50% - 46px)}
+    .parada .parada-img{width:calc(50% - 46px);margin-top:0;max-width:none}
+    .pin{left:50%;transform:translateX(-50%)}
+    /* parada-esq: card à esquerda, imagem à direita */
+    .parada-esq{justify-content:space-between;flex-direction:row}
+    /* parada-dir: card à direita, imagem à esquerda (inverte a ordem visual) */
+    .parada-dir{justify-content:space-between;flex-direction:row-reverse}
+  }
+  .card{
+    background:var(--paper);border:1px solid var(--line);border-radius:16px;
+    padding:26px 24px;transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(21,34,74,.09)}
+  .card-destaque{border:1px solid var(--line)}
+  .badge-destaque{display:inline-block;background:rgba(237,106,44,.1);color:var(--orange-deep);font-weight:600;font-size:11.5px;letter-spacing:.03em;text-transform:uppercase;padding:4px 11px;border-radius:20px;margin-bottom:13px}
+  .card .ico{font-size:34px;line-height:1;margin-bottom:12px;display:block}
+  .card h3{font-weight:700;font-size:27px;margin-bottom:8px}
+  .card p{font-size:16.5px;color:var(--mute)}
+  .card p b{color:var(--ink);font-weight:600}
+
+  /* ---------- GUINCHEIRO ---------- */
+  .guincheiro{background:var(--asphalt-2);color:#fff;padding:60px 0;position:relative;z-index:2;margin-top:34px}
+  .guincheiro .inner{max-width:760px}
+  .guincheiro .tag{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:14px}
+  .guincheiro h2{font-weight:800;font-size:clamp(28px,5vw,42px);margin-bottom:16px;color:#fff}
+  .guincheiro p{font-size:18px;color:#c5cee6;max-width:56ch}
+  .guincheiro p b{color:#fff;font-weight:600}
+
+  /* ---------- ÂNCORA DE VALOR ---------- */
+  .ancora{background:var(--white);padding:74px 0;text-align:center}
+  .gestao{background:var(--paper);padding:58px 0}
+  .gestao h2{text-align:center;font-size:30px;font-weight:800;color:var(--asphalt);margin-bottom:8px}
+  .gestao .sub{text-align:center;color:var(--mute);font-size:16px;max-width:520px;margin:0 auto 34px;padding:0 20px}
+  .gestao-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:900px;margin:0 auto;padding:0 20px}
+  @media(min-width:820px){.gestao-grid{grid-template-columns:repeat(4,1fr)}}
+  .gcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 18px;text-align:center;transition:transform .15s ease,box-shadow .15s ease}
+  .gcard:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(21,34,74,.1)}
+  .gcard .gico{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+  .gcard:nth-child(1) .gico{background:#e4f5ec}
+  .gcard:nth-child(2) .gico{background:#fdeecf}
+  .gcard:nth-child(3) .gico{background:#fbe7e7}
+  .gcard:nth-child(4) .gico{background:#e9eefb}
+  .gcard h3{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:5px}
+  .gcard p{font-size:14px;color:var(--mute);line-height:1.45}
+  .ancora .big{font-weight:800;font-size:clamp(34px,7vw,60px);max-width:16ch;margin:0 auto 18px}
+  .ancora .big .orange{color:var(--orange)}
+  .ancora p{font-size:19px;color:var(--mute);max-width:50ch;margin:0 auto}
+
+  /* ---------- COMO FUNCIONA ---------- */
+  .como{background:var(--asphalt);color:#fff;padding:66px 0}
+  .como h2{font-weight:800;font-size:clamp(30px,5.4vw,46px);margin-bottom:40px;text-align:center;color:#fff}
+  .steps{display:grid;gap:22px}
+  @media(min-width:760px){.steps{grid-template-columns:repeat(3,1fr);gap:26px}}
+  .step{position:relative;padding:28px 24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px}
+  .step .num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:44px;color:var(--orange);line-height:1;margin-bottom:10px}
+  .step h3{font-weight:700;font-size:22px;color:#fff;margin-bottom:7px}
+  .step p{font-size:16px;color:#bcc6e0}
+  .step p b{color:#fff;font-weight:600}
+  .como .center{text-align:center;margin-top:42px}
+
+  /* ---------- FECHO / QUEM FEZ ---------- */
+  .quem{background:var(--white);padding:64px 0;text-align:center}
+  .quem .tag{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:14px}
+  .quem h2{font-weight:800;font-size:clamp(30px,5.6vw,48px);max-width:16ch;margin:0 auto 18px}
+  .quem p{font-size:18px;color:var(--mute);max-width:56ch;margin:0 auto 32px}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--asphalt);color:#9aa6c6;padding:48px 0 30px}
+  .fcols{display:grid;gap:28px;margin-bottom:32px}
+  @media(min-width:680px){.fcols{grid-template-columns:1.4fr 1fr 1fr}}
+  footer .logo{margin-bottom:10px}
+  footer .ftag{color:#aeb9d8;font-size:15px}
+  footer h4{font-family:'Barlow Condensed',sans-serif;color:#fff;font-weight:700;font-size:18px;letter-spacing:.04em;margin-bottom:12px;text-transform:uppercase}
+  footer a{color:#9aa6c6;text-decoration:none;display:block;margin-bottom:8px;font-size:15.5px;transition:color .15s ease}
+  footer a:hover{color:var(--orange)}
+  .social{display:flex;gap:14px;margin-top:4px}
+  .social a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.07);margin:0;transition:background .15s ease,transform .15s ease}
+  .social a:hover{background:var(--orange);transform:translateY(-2px)}
+  .social svg{width:19px;height:19px;fill:#fff}
+  .fbottom{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;font-size:14px;color:#7f8cae;text-align:center}
+
+  /* ---------- INDIQUE E GANHE ---------- */
+  .indique{background:var(--asphalt-2);padding:60px 0}
+  .indique-card{max-width:640px;margin:0 auto;text-align:center;padding:0 22px}
+  .indique .emoji{font-size:40px;margin-bottom:14px}
+  .indique h2{color:#fff;font-size:32px;font-weight:800;margin-bottom:12px}
+  .indique h2 .orange{color:var(--orange)}
+  .indique p{color:#c5cde3;font-size:17px;line-height:1.55;max-width:520px;margin:0 auto 18px}
+  .indique .destaque-num{color:#fff;font-weight:700}
+  .indique .btn-wpp{display:inline-flex;align-items:center;gap:9px;background:#25D366;color:#fff;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;padding:15px 28px;border-radius:12px;transition:transform .15s ease,box-shadow .15s ease;box-shadow:0 8px 22px rgba(37,211,102,.3)}
+  .indique .btn-wpp:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(37,211,102,.4)}
+  .indique .mini{color:#8f9bbd;font-size:13.5px;margin-top:14px}
+
+  /* ---------- REVEAL ---------- */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease, transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+  /* foco visível */
+  a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:3px;border-radius:6px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="nav-left">
+      <button class="burger" onclick="document.getElementById('menuPanel').classList.add('open');document.getElementById('menuOverlay').classList.add('open')" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="logo">Log<b>Rotas</b></div>
+    </div>
+  </div>
+</header>
+
+<!-- MENU LATERAL -->
+<div class="menu-overlay" id="menuOverlay" onclick="document.getElementById('menuPanel').classList.remove('open');this.classList.remove('open')"></div>
+<nav class="menu-panel" id="menuPanel">
+  <div class="mp-top">
+    <span class="mp-logo">Log<b>Rotas</b></span>
+    <button class="mp-close" onclick="document.getElementById('menuPanel').classList.remove('open');document.getElementById('menuOverlay').classList.remove('open')" aria-label="Fechar menu">✕</button>
+  </div>
+  <a href="index.html">Início</a>
+  <a href="assinar.html">Planos</a>
+  <a href="cadastro.html">Criar conta grátis</a>
+  <a href="cadastro.html">Entrar</a>
+  <a href="termos.html">Termos de Uso</a>
+  <a href="privacidade.html">Política de Privacidade</a>
+  <a href="cadastro.html" class="destaque">Começar grátis →</a>
+  <div class="mp-mini">Sua rota, seu controle.</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Feito por motorista, pra motorista</span>
+    <h1>Sua rota, seu controle. Seu frete, <span class="orange">no preço certo.</span></h1>
+    <p class="sub">O LogRotas faz a conta que você não tem tempo de fazer na estrada: combustível, pedágio, distância e o valor justo do frete.</p>
+    <a href="cadastro.html" class="btn">Começar grátis por 14 dias →</a>
+    <div class="reassure"><b>Sem cartão. Sem pegadinha.</b> É só testar.</div>
+  </div>
+</section>
+
+<div class="route">
+
+  <!-- PROBLEMA -->
+  <section class="problema">
+    <div class="wrap reveal">
+      <h2>Você já perdeu dinheiro sem perceber?</h2>
+      <p>Aceitou um frete no olho e na volta viu que o combustível comeu o lucro. Esqueceu de somar o pedágio. Cobrou de menos porque o cliente apertou e você não tinha o número na mão pra defender seu preço.</p>
+      <p>Isso acontece todo dia com motorista autônomo. Não é falta de competência — é falta de <strong>ferramenta</strong>. O LogRotas põe a conta certa na palma da sua mão, em segundos.</p>
+    </div>
+  </section>
+
+  <!-- MÓDULOS -->
+  <section class="modulos">
+    <div class="wrap">
+
+      <div class="parada parada-esq reveal">
+        <span class="pin"></span>
+        <div class="card">
+          <span class="ico">💰</span>
+          <h3>Calculadora de Frete</h3>
+          <p>O coração do app. Coloca origem e destino, e ele mostra <b>quanto cobrar pra não sair no prejuízo</b>. Chega de aceitar frete no chute — com o número na tela, você negocia firme.</p>
+        </div>
+        <div class="parada-img"><img src="guincheiro.jpeg" alt="Guincheiro com caminhão plataforma usando o celular" class="img-clean" loading="lazy"></div>
+      </div>
+
+      <div class="parada parada-dir reveal">
+        <span class="pin"></span>
+        <div class="card card-destaque">
+          <span class="badge-destaque">Pra quem faz muita entrega</span>
+          <span class="ico">📍</span>
+          <h3>Otimizador de Rotas</h3>
+          <p>Recebeu um monte de pacotes pra entregar — Shopee, Shein, Amazon, encomenda? Joga todos os endereços no app e ele <b>monta a melhor ordem pra você rodar menos, gastar menos combustível e terminar o dia mais cedo</b>.</p>
+          <p>Faz dezenas de paradas? É aqui que o LogRotas mais coloca dinheiro no seu bolso: <b>menos quilômetro rodado é mais entrega no mesmo tempo</b>. Quem roda com caminhão pequeno, van ou carro sente a diferença já no primeiro dia.</p>
+        </div>
+        <div class="parada-img"><img src="entregas.jpeg" alt="Entregadores carregando pacotes em van e moto" class="img-framed" loading="lazy"></div>
+      </div>
+
+      <div class="parada parada-esq reveal">
+        <span class="pin"></span>
+        <div class="card">
+          <span class="ico">🛣️</span>
+          <h3>Calculadora de Viagem</h3>
+          <p>Quanto vai custar pra ir de um ponto a outro? O app calcula a distância real, o combustível pelo consumo do <b>seu</b> veículo e o pedágio do caminho. Você sai sabendo o gasto antes de dar a partida.</p>
+        </div>
+        <div class="parada-img"><img src="viagem.jpeg" alt="Família viajando de carro pela estrada litorânea" class="img-framed" loading="lazy"></div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- GUINCHEIRO -->
+<section class="guincheiro">
+  <div class="wrap inner reveal">
+    <div class="tag">É guincheiro? Tem uma ferramenta só sua</div>
+    <h2>Checklist de Veículo 🪝</h2>
+    <p>Registra a coleta e a entrega com fotos, assinatura do cliente e tudo com data, hora e localização. Documentou a avaria na hora certa? <b>Tá protegido.</b> Um único problema bem documentado já evita uma dor de cabeça que custa caro.</p>
+  </div>
+</section>
+
+<!-- GESTÃO -->
+<section class="gestao">
+  <div class="wrap">
+    <h2 class="reveal">E ainda cuida do seu negócio</h2>
+    <p class="sub reveal">Rodar bem não é só calcular o frete. É saber quanto entra, quanto sai e não perder prazo de documento.</p>
+    <div class="gestao-grid">
+      <div class="gcard reveal">
+        <div class="gico">📊</div>
+        <h3>Financeiro</h3>
+        <p>Veja quanto ganhou e quanto gastou. O lucro na tela, sem planilha.</p>
+      </div>
+      <div class="gcard reveal">
+        <div class="gico">💸</div>
+        <h3>Despesas</h3>
+        <p>Registre cada gasto do dia a dia e saiba pra onde vai seu dinheiro.</p>
+      </div>
+      <div class="gcard reveal">
+        <div class="gico">🔧</div>
+        <h3>Manutenção</h3>
+        <p>Controle as trocas e revisões do veículo. Nada te pega de surpresa.</p>
+      </div>
+      <div class="gcard reveal">
+        <div class="gico">📄</div>
+        <h3>Documentos</h3>
+        <p>Cadastre os vencimentos e receba aviso antes de vencer. Sem multa por esquecimento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ÂNCORA -->
+<section class="ancora">
+  <div class="wrap reveal">
+    <div class="big">Se paga <span class="orange">sozinho.</span></div>
+    <p>Um frete cobrado no valor certo. Uma avaria documentada que não virou prejuízo. Uma vez só já paga meses de LogRotas. O resto é lucro que antes ficava pra trás.</p>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="como">
+  <div class="wrap">
+    <h2 class="reveal">Começar é fácil</h2>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="num">1</div>
+        <h3>Cadastra aqui</h3>
+        <p>Cria sua conta no site e ganha <b>14 dias grátis</b> pra usar tudo.</p>
+      </div>
+      <div class="step reveal">
+        <div class="num">2</div>
+        <h3>Baixa o app</h3>
+        <p>Instala o LogRotas na Play Store, no seu celular.</p>
+      </div>
+      <div class="step reveal">
+        <div class="num">3</div>
+        <h3>Entra e usa</h3>
+        <p>Faz login com o <b>mesmo e-mail</b> do cadastro. Pronto, tá liberado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDIQUE E GANHE -->
+<section class="indique">
+  <div class="indique-card reveal">
+    <div class="emoji">🤝</div>
+    <h2>Indique e <span class="orange">ganhe dias grátis</span></h2>
+    <p>Conhece outro motorista que ia curtir o LogRotas? Chame pelo WhatsApp. Quando ele criar a conta, <span class="destaque-num">você ganha 30 dias grátis e ele ganha 14 dias</span> de acesso completo.</p>
+    <a href="https://wa.me/?text=Ei!%20T%C3%B4%20usando%20o%20LogRotas%2C%20um%20app%20que%20calcula%20frete%2C%20combust%C3%ADvel%20e%20ped%C3%A1gio%20pra%20motorista.%20Cria%20sua%20conta%20que%20a%20gente%20ganha%20dias%20gr%C3%A1tis%3A%20https%3A%2F%2Flogrotas.com.br" target="_blank" rel="noopener" class="btn-wpp">📲 Convidar um parceiro</a>
+    <div class="mini">O convite vai pelo seu WhatsApp, direto pro seu amigo.</div>
+  </div>
+</section>
+
+<!-- QUEM FEZ -->
+<section class="quem">
+  <div class="wrap reveal">
+    <div class="tag">Quem fez</div>
+    <h2>Feito por motorista, pra motorista.</h2>
+    <p>O LogRotas não nasceu num escritório. Nasceu na estrada, da mão de quem vive de dirigir e cansou de ver colega perdendo dinheiro por falta de ferramenta. Cada função foi pensada pra resolver um problema de verdade de quem está no volante.</p>
+    <a href="cadastro.html" class="btn">Começar grátis por 14 dias →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="fcols">
+      <div>
+        <div class="logo">Log<b>Rotas</b></div>
+        <div class="ftag">Sua rota, seu controle.</div>
+      </div>
+      <div>
+        <h4>Suporte</h4>
+        <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a>
+      </div>
+      <div>
+        <h4>Redes</h4>
+        <div class="social">
+          <a href="https://www.instagram.com/log.rotas" target="_blank" rel="noopener" aria-label="Instagram do LogRotas">
+            <svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.52.01-4.76.07-.91.04-1.4.2-1.73.32-.43.17-.74.37-1.07.69-.32.33-.52.64-.69 1.07-.12.33-.28.82-.32 1.73-.06 1.24-.07 1.61-.07 4.76s.01 3.52.07 4.76c.04.91.2 1.4.32 1.73.17.43.37.74.69 1.07.33.32.64.52 1.07.69.33.12.82.28 1.73.32 1.24.06 1.61.07 4.76.07s3.52-.01 4.76-.07c.91-.04 1.4-.2 1.73-.32.43-.17.74-.37 1.07-.69.32-.33.52-.64.69-1.07.12-.33.28-.82.32-1.73.06-1.24.07-1.61.07-4.76s-.01-3.52-.07-4.76c-.04-.91-.2-1.4-.32-1.73-.17-.43-.37-.74-.69-1.07-.33-.32-.64-.52-1.07-.69-.33-.12-.82-.28-1.73-.32-1.24-.06-1.61-.07-4.76-.07zm0 2.76a5.3 5.3 0 110 10.6 5.3 5.3 0 010-10.6zm0 8.74a3.44 3.44 0 100-6.88 3.44 3.44 0 000 6.88zm6.74-8.94a1.24 1.24 0 11-2.48 0 1.24 1.24 0 012.48 0z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/share/18J6MpL8us/" target="_blank" rel="noopener" aria-label="Facebook do LogRotas">
+            <svg viewBox="0 0 24 24"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@log.rotas" target="_blank" rel="noopener" aria-label="TikTok do LogRotas">
+            <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.89-4.64V9.4a6.33 6.33 0 00-1-.08A6.34 6.34 0 005.3 20.97a6.34 6.34 0 0010.86-4.43V8.94a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.34-.37z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="fbottom">© 2026 LogRotas. Feito no Brasil, pra quem roda o Brasil.</div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  (function(){
+    var els=document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}
+      });
+    },{threshold:.14});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+
+</body>
+</html>
