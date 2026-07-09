@@ -37,6 +37,9 @@
   .preco{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:38px;color:var(--ink);line-height:1}
   .preco small{font-size:16px;color:var(--mute);font-weight:600}
   .preco-def{display:inline-block;background:#fff8f3;color:var(--orange-deep);font-weight:700;font-size:17px;padding:6px 14px;border-radius:8px;border:1px dashed var(--orange)}
+  .preco-box{margin-bottom:4px}
+  .preco-de{font-size:15px;color:var(--mute);text-decoration:line-through;margin-bottom:4px;font-weight:600}
+  .selo-lancamento{display:inline-block;margin-top:8px;background:#fff8f3;color:var(--orange-deep);font-weight:600;font-size:12px;padding:5px 10px;border-radius:20px;border:1px solid rgba(237,106,44,.25);line-height:1.3}
   .ul{list-style:none;margin:18px 0 22px;flex-grow:1}
   .ul li{display:flex;gap:9px;align-items:flex-start;font-size:15px;margin-bottom:10px;color:var(--ink)}
   .ul li svg{flex-shrink:0;width:18px;height:18px;fill:var(--orange);margin-top:3px}
@@ -94,6 +97,7 @@
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Despesas (uso limitado)</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Manutenção (uso limitado)</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Documentos (uso limitado)</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fechar meu dia (uso limitado)</li>
       </ul>
       <a href="cadastro.html" class="btn btn-ghost">Começar grátis</a>
     </div>
@@ -102,7 +106,11 @@
     <div class="plano">
       <h3>Frete</h3>
       <div class="desc">Pra quem vive de frete e quer cobrar certo todo dia.</div>
-      <div class="preco-def">R$ [A DEFINIR]/mês</div>
+      <div class="preco-box">
+        <div class="preco-de">De R$ 29,90</div>
+        <div class="preco">R$ 19,90<small>/mês</small></div>
+        <span class="selo-lancamento">Preço de lançamento por tempo limitado</span>
+      </div>
       <ul class="ul">
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Viagem</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Calculadora de Frete sem limite</b></li>
@@ -111,6 +119,7 @@
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Despesas sem limite</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Manutenção sem limite</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Documentos sem limite</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fechar meu dia sem limite</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Sem anúncios nas calculadoras</li>
         <li class="no"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg> Otimizador completo</li>
       </ul>
@@ -121,11 +130,16 @@
     <div class="plano">
       <h3>Completo</h3>
       <div class="desc">Pra quem faz muita entrega e precisa do otimizador.</div>
-      <div class="preco-def">R$ [A DEFINIR]/mês</div>
+      <div class="preco-box">
+        <div class="preco-de">De R$ 39,90</div>
+        <div class="preco">R$ 29,90<small>/mês</small></div>
+        <span class="selo-lancamento">Preço de lançamento por tempo limitado</span>
+      </div>
       <ul class="ul">
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Viagem</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Calculadora de Frete sem limite</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Checklist de Veículos sem limite</li>
+        <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fechar meu dia sem limite</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Financeiro, Despesas, Manutenção e Documentos</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Otimizador de Rotas sem limite</b></li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Todos os recursos liberados</li>
