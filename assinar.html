@@ -193,6 +193,17 @@ const createAsaasSubscription = httpsCallable(functions, 'createAsaasSubscriptio
 const btnFrete = document.getElementById('btnFrete');
 const btnCompleto = document.getElementById('btnCompleto');
 
+function getCpfCnpj() {
+  let valor = prompt('Para gerar a cobrança, informe seu CPF ou CNPJ (somente números):');
+  if (!valor) return null;
+  valor = valor.replace(/\D/g, '');
+  if (valor.length !== 11 && valor.length !== 14) {
+    alert('CPF deve ter 11 dígitos ou CNPJ 14 dígitos. Tente novamente.');
+    return null;
+  }
+  return valor;
+}
+
 async function handlePlanClick(planType, buttonEl) {
   const originalText = buttonEl.textContent;
 
@@ -201,11 +212,18 @@ async function handlePlanClick(planType, buttonEl) {
     return;
   }
 
+  const cpfCnpj = getCpfCnpj();
+  if (!cpfCnpj) {
+    buttonEl.textContent = originalText;
+    buttonEl.style.pointerEvents = '';
+    return;
+  }
+
   try {
     buttonEl.textContent = 'Gerando cobrança...';
     buttonEl.style.pointerEvents = 'none';
 
-    const result = await createAsaasSubscription({ planType });
+    const result = await createAsaasSubscription({ planType, cpfCnpj });
     const { invoiceUrl } = result.data;
 
     if (invoiceUrl) {
