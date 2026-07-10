@@ -123,7 +123,7 @@
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Sem anúncios nas calculadoras</li>
         <li class="no"><svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg> Otimizador completo</li>
       </ul>
-      <a href="#" class="btn btn-primary">Assinar Frete</a>
+      <a href="#" id="btnFrete" class="btn btn-primary">Assinar Frete</a>
     </div>
 
     <!-- COMPLETO -->
@@ -144,7 +144,7 @@
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> <b>Otimizador de Rotas sem limite</b></li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Todos os recursos liberados</li>
       </ul>
-      <a href="#" class="btn btn-primary">Assinar Completo</a>
+      <a href="#" id="btnCompleto" class="btn btn-primary">Assinar Completo</a>
     </div>
 
   </div>
@@ -170,5 +170,72 @@
     <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
   </div>
 </footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDQgXb5Smvd0C8cslsq0WPIaahweH2Ox5E',
+  authDomain: 'logrotas-85e7e.firebaseapp.com',
+  projectId: 'logrotas-85e7e',
+  storageBucket: 'logrotas-85e7e.firebasestorage.app',
+  messagingSenderId: '404332371972',
+  appId: '1:404332371972:web:fb1234a8c8294536121551'
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const functions = getFunctions(app, 'southamerica-east1');
+const createAsaasSubscription = httpsCallable(functions, 'createAsaasSubscription');
+
+const btnFrete = document.getElementById('btnFrete');
+const btnCompleto = document.getElementById('btnCompleto');
+
+async function handlePlanClick(planType, buttonEl) {
+  const originalText = buttonEl.textContent;
+
+  if (!auth.currentUser) {
+    window.location.href = 'cadastro.html';
+    return;
+  }
+
+  try {
+    buttonEl.textContent = 'Gerando cobrança...';
+    buttonEl.style.pointerEvents = 'none';
+
+    const result = await createAsaasSubscription({ planType });
+    const { invoiceUrl } = result.data;
+
+    if (invoiceUrl) {
+      window.location.href = invoiceUrl;
+    } else {
+      throw new Error('Link de pagamento não retornado.');
+    }
+  } catch (err) {
+    console.error('Erro ao criar assinatura:', err);
+    alert('Não foi possível iniciar a assinatura agora. Tente novamente em instantes ou fale com o suporte.');
+    buttonEl.textContent = originalText;
+    buttonEl.style.pointerEvents = '';
+  }
+}
+
+if (btnFrete) {
+  btnFrete.addEventListener('click', (e) => {
+    e.preventDefault();
+    handlePlanClick('FRETE', btnFrete);
+  });
+}
+
+if (btnCompleto) {
+  btnCompleto.addEventListener('click', (e) => {
+    e.preventDefault();
+    handlePlanClick('COMPLETO', btnCompleto);
+  });
+}
+
+onAuthStateChanged(auth, () => {});
+</script>
 </body>
 </html>
