@@ -126,6 +126,7 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js';
 
 // Cole os valores do Firebase Console > Configurações do projeto > Seus apps > app Web
@@ -215,6 +216,7 @@ function validateForm() {
 }
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const functions = getFunctions(app, 'southamerica-east1');
 const registerWithBetaCode = httpsCallable(functions, 'registerWithBetaCode');
 
@@ -238,11 +240,20 @@ form.addEventListener('submit', async (event) => {
       codigoBeta: data.codigoBeta
     });
 
-    form.reset();
-    showFeedback(
-      'success',
-      'Conta criada com sucesso! Baixe o app LogRotas e entre com seu e-mail e senha para começar seus 14 dias grátis.'
-    );
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.senha);
+      showFeedback(
+        'success',
+        'Conta criada com sucesso! Redirecionando para escolher seu plano...'
+      );
+      setTimeout(() => { window.location.href = 'assinar.html'; }, 1500);
+    } catch (signInError) {
+      console.error('Erro no login automático:', signInError);
+      showFeedback(
+        'success',
+        'Conta criada com sucesso! Não foi possível entrar automaticamente — acesse assinar.html e faça login com seu e-mail e senha.'
+      );
+    }
   } catch (error) {
     console.error('Erro no cadastro:', error);
     showFeedback('error', getFriendlyError(error));
