@@ -107,9 +107,10 @@
   .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:480px){.field-row{grid-template-columns:1fr}}
 
-  .selos{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
-  .selo{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--mute);font-weight:600}
-  .selo svg{width:16px;height:16px;fill:var(--orange)}
+  .selos{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 12px;margin:14px 0 6px;padding-top:12px;border-top:1px solid var(--line)}
+  .selo{flex:1 1 0;min-width:88px;display:flex;align-items:center;justify-content:center;gap:4px;background:transparent;border:none;padding:0;font-size:11px;color:var(--mute);font-weight:600;line-height:1.25;text-align:center}
+  .selo svg{width:13px;height:13px;fill:var(--orange);flex-shrink:0}
+  @media(max-width:520px){.selos{gap:4px}.selo{font-size:9px;gap:3px;min-width:0}.selo svg{width:11px;height:11px}}
 
   .btn-pagar{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.02em;padding:16px;border-radius:12px;cursor:pointer;transition:background .15s ease,transform .15s ease;margin-top:6px}
   .btn-pagar:hover:not(:disabled){background:var(--orange-deep);transform:translateY(-1px)}
