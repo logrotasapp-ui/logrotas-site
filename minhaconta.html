@@ -36,6 +36,10 @@
   .info-list .label{color:var(--mute)}
   .info-list .value{font-weight:600;text-align:right}
   .badge{display:inline-block;background:#fff8f3;color:var(--orange-deep);font-weight:600;font-size:13px;padding:5px 12px;border-radius:20px;border:1px solid rgba(237,106,44,.25)}
+  .pending-invoice{background:#fff8f3;border:1px solid rgba(237,106,44,.28);border-radius:12px;padding:16px;margin-top:16px}
+  .pending-invoice h3{font-size:16px;font-weight:700;color:var(--orange-deep);margin-bottom:10px}
+  .pending-invoice .pending-meta{font-size:14px;color:var(--ink);margin-bottom:12px;line-height:1.5}
+  .pending-invoice .btn-primary{width:100%}
 
   .loading{text-align:center;padding:40px 10px;color:var(--mute)}
   .spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite}
@@ -103,6 +107,11 @@
     <div class="section">
       <h2>Sua assinatura</h2>
       <ul class="info-list" id="subscriptionList"></ul>
+      <div id="pendingInvoice" class="pending-invoice" style="display:none">
+        <h3>Você tem uma fatura em aberto</h3>
+        <p class="pending-meta" id="pendingMeta"></p>
+        <button type="button" class="btn btn-primary" id="btnPagarAgora">Pagar agora</button>
+      </div>
     </div>
 
     <div class="section" id="cancelSection" style="display:none">
@@ -154,8 +163,10 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const functions = getFunctions(app, 'southamerica-east1');
 const cancelAsaasSubscription = httpsCallable(functions, 'cancelAsaasSubscription');
+const getFaturaPendente = httpsCallable(functions, 'getFaturaPendente');
 
 let currentUserData = null;
+let pendingFaturaId = null;
 
 const pageLoading = document.getElementById('pageLoading');
 const pageContent = document.getElementById('pageContent');
@@ -165,6 +176,50 @@ const cancelSection = document.getElementById('cancelSection');
 const cancelModal = document.getElementById('cancelModal');
 const cancelModalFeedback = document.getElementById('cancelModalFeedback');
 const btnCancelConfirm = document.getElementById('btnCancelConfirm');
+const pendingInvoice = document.getElementById('pendingInvoice');
+const pendingMeta = document.getElementById('pendingMeta');
+const btnPagarAgora = document.getElementById('btnPagarAgora');
+
+function formatMoney(value) {
+  const num = Number(value);
+  if (Number.isNaN(num)) return '—';
+  return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function isUnpaidSubscriptionStatus(status) {
+  const s = String(status || '').toLowerCase();
+  return s === 'pending' || s === 'vencido';
+}
+
+function hidePendingInvoice() {
+  pendingInvoice.style.display = 'none';
+  pendingFaturaId = null;
+}
+
+async function loadPendingInvoice(data) {
+  hidePendingInvoice();
+
+  if (data.acessoVitalicio || !isUnpaidSubscriptionStatus(data.subscriptionStatus)) {
+    return;
+  }
+
+  try {
+    const result = await getFaturaPendente();
+    const { temFaturaPendente, faturaId, valor, vencimento } = result.data;
+
+    if (!temFaturaPendente || !faturaId) {
+      return;
+    }
+
+    pendingFaturaId = faturaId;
+    const valorFmt = formatMoney(valor);
+    const vencFmt = formatDate(vencimento) || '—';
+    pendingMeta.textContent = `Valor: ${valorFmt} · Vencimento: ${vencFmt}`;
+    pendingInvoice.style.display = 'block';
+  } catch (err) {
+    console.error('Erro ao consultar fatura pendente:', err);
+  }
+}
 
 function showPageFeedback(type, message) {
   pageFeedback.className = 'feedback ' + type;
@@ -221,6 +276,7 @@ function renderSubscription(data) {
   if (data.acessoVitalicio) {
     addInfoItem('Acesso', '<span class="badge">Acesso vitalício (cortesia)</span>');
     cancelSection.style.display = 'none';
+    hidePendingInvoice();
     return;
   }
 
@@ -259,6 +315,7 @@ async function loadUserProfile(uid) {
   }
   currentUserData = snap.data();
   renderUser(currentUserData);
+  await loadPendingInvoice(currentUserData);
   pageLoading.style.display = 'none';
   pageContent.style.display = 'block';
 }
@@ -293,6 +350,7 @@ async function handleCancelSubscription() {
       subscriptionStatus: 'cancelado'
     };
     renderSubscription(currentUserData);
+    await loadPendingInvoice(currentUserData);
   } catch (err) {
     console.error('Erro ao cancelar assinatura:', err);
     cancelModalFeedback.textContent = err?.message || 'Não foi possível cancelar a assinatura. Tente novamente.';
@@ -306,6 +364,12 @@ async function handleCancelSubscription() {
 document.getElementById('btnOpenCancel').addEventListener('click', openCancelModal);
 document.getElementById('btnCancelBack').addEventListener('click', closeCancelModal);
 document.getElementById('btnCancelConfirm').addEventListener('click', handleCancelSubscription);
+
+btnPagarAgora.addEventListener('click', () => {
+  if (pendingFaturaId) {
+    window.location.href = `pagamento.html?fatura=${encodeURIComponent(pendingFaturaId)}`;
+  }
+});
 
 cancelModal.addEventListener('click', (e) => {
   if (e.target === cancelModal) closeCancelModal();

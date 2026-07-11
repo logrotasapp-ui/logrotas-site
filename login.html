@@ -40,6 +40,10 @@
 
   .feedback{border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:15px;line-height:1.45;display:none}
   .feedback.error{display:block;background:#fff0f0;border:1px solid #f5b8b8;color:#8b1a1a}
+  .feedback.success{display:block;background:#f0faf4;border:1px solid #a8dfc0;color:#1a5c32}
+
+  .forgot-pass{display:block;width:100%;text-align:center;margin-top:12px;background:none;border:none;color:var(--orange);font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;cursor:pointer;padding:0}
+  .forgot-pass:hover{text-decoration:underline}
 
   .login-link{text-align:center;font-size:15px;color:var(--mute);margin:18px 0 40px}
   .login-link a{color:var(--orange);text-decoration:none;font-weight:600}
@@ -77,6 +81,7 @@
         <input type="password" id="senha" name="senha" placeholder="Sua senha" required autocomplete="current-password">
       </div>
       <button type="submit" class="btn" id="btnSubmit">Entrar</button>
+      <button type="button" class="forgot-pass" id="btnForgotPass">Esqueci minha senha</button>
     </form>
   </div>
   <p class="login-link">Ainda não tem conta? <a href="cadastro.html">Criar conta</a></p>
@@ -90,7 +95,7 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
-import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDQgXb5Smvd0C8cslsq0WPIaahweH2Ox5E',
@@ -113,10 +118,47 @@ function showError(message) {
   feedback.textContent = message;
 }
 
+function showSuccess(message) {
+  feedback.className = 'feedback success';
+  feedback.textContent = message;
+}
+
 function clearFeedback() {
   feedback.className = 'feedback';
   feedback.textContent = '';
 }
+
+document.getElementById('btnForgotPass').addEventListener('click', async () => {
+  clearFeedback();
+
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    showError('Informe seu e-mail para receber o link de redefinição.');
+    return;
+  }
+
+  const btnForgot = document.getElementById('btnForgotPass');
+  const originalText = btnForgot.textContent;
+  btnForgot.disabled = true;
+  btnForgot.textContent = 'Enviando...';
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showSuccess('Enviamos um link de redefinição para seu e-mail.');
+  } catch (error) {
+    console.error('Erro ao enviar redefinição:', error);
+    if (error?.code === 'auth/invalid-email') {
+      showError('O e-mail informado não é válido.');
+    } else if (error?.code === 'auth/user-not-found') {
+      showError('Não encontramos uma conta com este e-mail.');
+    } else {
+      showError('Não foi possível enviar o link agora. Tente novamente em instantes.');
+    }
+  } finally {
+    btnForgot.disabled = false;
+    btnForgot.textContent = originalText;
+  }
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
