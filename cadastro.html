@@ -99,9 +99,9 @@
         </select>
       </div>
       <div class="field">
-        <label for="codigoBeta">Código beta</label>
-        <input type="text" id="codigoBeta" name="codigoBeta" placeholder="Seu código de acesso" required autocomplete="off">
-        <div class="hint">Obrigatório para criar a conta no período beta.</div>
+        <label for="codigoBeta">Código de cortesia (opcional)</label>
+        <input type="text" id="codigoBeta" name="codigoBeta" placeholder="Seu código de cortesia" autocomplete="off">
+        <div class="hint">Opcional — se você recebeu um código de cortesia, informe aqui.</div>
       </div>
       <div class="field">
         <label for="senha">Senha</label>
@@ -159,14 +159,12 @@ function getFriendlyError(error) {
   const details = typeof error?.details === 'string' ? error.details.toLowerCase() : '';
   const combined = message + ' ' + details;
 
-  if (code === 'functions/invalid-argument' || combined.includes('invalid') || combined.includes('inválid') || combined.includes('required') || combined.includes('obrigat')) {
-    return 'Verifique os dados informados. Todos os campos são obrigatórios e devem estar corretos.';
+  if (combined.includes('código beta inválido') || combined.includes('codigo beta invalido') ||
+      (combined.includes('beta') && (combined.includes('inválid') || combined.includes('invalid') || combined.includes('utilizado') || combined.includes('usado') || combined.includes('já foi')))) {
+    return 'Código beta inválido ou já utilizado. Corrija o código ou apague o campo para seguir com 14 dias grátis.';
   }
-  if (combined.includes('beta') && (combined.includes('invalid') || combined.includes('inválid') || combined.includes('not found') || combined.includes('não encontr') || code === 'functions/not-found')) {
-    return 'Código beta inválido. Verifique o código e tente novamente.';
-  }
-  if (combined.includes('beta') && (combined.includes('used') || combined.includes('usado') || combined.includes('already') || combined.includes('já foi'))) {
-    return 'Este código beta já foi utilizado.';
+  if (code === 'functions/invalid-argument' || combined.includes('required') || combined.includes('obrigat')) {
+    return 'Verifique os dados informados. Todos os campos obrigatórios devem estar corretos.';
   }
   if (combined.includes('telefone') || combined.includes('phone') || combined.includes('whatsapp')) {
     return 'Este telefone já está cadastrado.';
@@ -199,7 +197,7 @@ function validateForm() {
   const senha = document.getElementById('senha').value;
   const aceito = document.getElementById('aceito').checked;
 
-  if (!nome || !email || !telefone || !tipoPerfil || !codigoBeta || !senha) {
+  if (!nome || !email || !telefone || !tipoPerfil || !senha) {
     showFeedback('error', 'Preencha todos os campos obrigatórios.');
     return null;
   }
@@ -212,7 +210,7 @@ function validateForm() {
     return null;
   }
 
-  return { nome, email, telefone, tipoPerfil, codigoBeta, senha };
+  return { nome, email, telefone, tipoPerfil, codigoBeta: codigoBeta || null, senha };
 }
 
 const app = initializeApp(firebaseConfig);
@@ -231,14 +229,18 @@ form.addEventListener('submit', async (event) => {
   btnSubmit.textContent = 'Criando conta…';
 
   try {
-    await registerWithBetaCode({
+    const payload = {
       email: data.email,
       senha: data.senha,
       nome: data.nome,
       telefone: data.telefone,
-      tipoPerfil: data.tipoPerfil,
-      codigoBeta: data.codigoBeta
-    });
+      tipoPerfil: data.tipoPerfil
+    };
+    if (data.codigoBeta) {
+      payload.codigoBeta = data.codigoBeta;
+    }
+
+    await registerWithBetaCode(payload);
 
     try {
       await signInWithEmailAndPassword(auth, data.email, data.senha);
