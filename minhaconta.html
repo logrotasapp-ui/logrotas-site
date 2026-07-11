@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Minha Conta</title>
+<meta name="description" content="Gerencie sua conta e assinatura LogRotas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
+    --paper:#F6F7F9;--ink:#1b2746;--mute:#616e90;--line:#e3e7ef;--white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
+  .wrap{width:100%;max-width:1000px;margin:0 auto;padding:0 22px}
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none}
+  .logo b{color:var(--orange)}
+  .voltar{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
+  .voltar:hover{color:var(--orange)}
+
+  .hero{background:var(--asphalt);color:#fff;padding:40px 0 30px;text-align:center}
+  .hero h1{font-size:34px;font-weight:800}
+
+  .content{max-width:560px;margin:0 auto;padding:28px 0 48px}
+  .section{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px;margin-bottom:18px;box-shadow:0 8px 24px rgba(21,34,74,.05)}
+  .section h2{font-size:22px;font-weight:700;margin-bottom:14px;color:var(--asphalt)}
+  .info-list{list-style:none}
+  .info-list li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .info-list li:last-child{border-bottom:none}
+  .info-list .label{color:var(--mute)}
+  .info-list .value{font-weight:600;text-align:right}
+  .badge{display:inline-block;background:#fff8f3;color:var(--orange-deep);font-weight:600;font-size:13px;padding:5px 12px;border-radius:20px;border:1px solid rgba(237,106,44,.25)}
+
+  .loading{text-align:center;padding:40px 10px;color:var(--mute)}
+  .spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .feedback{border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:15px;line-height:1.45;display:none}
+  .feedback.error{display:block;background:#fff0f0;border:1px solid #f5b8b8;color:#8b1a1a}
+  .feedback.success{display:block;background:#f0faf4;border:1px solid #a8dfc0;color:#1a5c32}
+
+  .btn{display:inline-block;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em;padding:12px 18px;border-radius:11px;cursor:pointer;border:none;transition:background .15s ease,transform .15s ease}
+  .btn-danger{background:#fff;color:#8b1a1a;border:1.5px solid #f5b8b8}
+  .btn-danger:hover{background:#fff0f0;transform:translateY(-1px)}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover:not(:disabled){background:var(--orange-deep);transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:var(--asphalt);border:1.5px solid var(--line)}
+  .btn-ghost:hover{background:var(--paper)}
+  .btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+  .modal{position:fixed;inset:0;background:rgba(21,34,74,.45);display:none;align-items:center;justify-content:center;padding:22px;z-index:100}
+  .modal.open{display:flex}
+  .modal-box{background:#fff;border-radius:18px;padding:24px 22px;max-width:420px;width:100%;box-shadow:0 16px 40px rgba(21,34,74,.18)}
+  .modal-box p{color:var(--ink);font-size:15px;margin-bottom:16px;line-height:1.5}
+  .modal-box .field{margin-bottom:16px}
+  .modal-box label{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(--ink)}
+  .modal-box textarea{width:100%;min-height:72px;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:15px;resize:vertical}
+  .modal-box textarea:focus{outline:none;border-color:var(--orange)}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+  footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
+  footer a{color:#9aa6c6;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="voltar">← Início</a>
+    <a href="index.html" class="logo">Log<b>Rotas</b></a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Minha Conta</h1>
+  </div>
+</section>
+
+<div class="wrap content">
+  <div id="pageFeedback" class="feedback"></div>
+
+  <div id="pageLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Carregando sua conta...</p>
+  </div>
+
+  <div id="pageContent" style="display:none">
+    <div class="section">
+      <h2>Dados da conta</h2>
+      <ul class="info-list">
+        <li><span class="label">Nome</span><span class="value" id="userNome">—</span></li>
+        <li><span class="label">E-mail</span><span class="value" id="userEmail">—</span></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Sua assinatura</h2>
+      <ul class="info-list" id="subscriptionList"></ul>
+    </div>
+
+    <div class="section" id="cancelSection" style="display:none">
+      <h2>Cancelar assinatura</h2>
+      <p style="color:var(--mute);font-size:15px;margin-bottom:14px">Você pode cancelar a qualquer momento. O acesso permanece até o fim do período já pago.</p>
+      <button type="button" class="btn btn-danger" id="btnOpenCancel">Cancelar assinatura</button>
+    </div>
+  </div>
+</div>
+
+<div id="cancelModal" class="modal" aria-hidden="true">
+  <div class="modal-box">
+    <p>Tem certeza que deseja cancelar? Você perderá o acesso ao fim do período já pago.</p>
+    <div class="field">
+      <label for="cancelMotivo">Motivo do cancelamento (opcional)</label>
+      <textarea id="cancelMotivo" placeholder="Conte-nos o motivo, se quiser"></textarea>
+    </div>
+    <div id="cancelModalFeedback" class="feedback error" style="display:none"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="btnCancelBack">Voltar</button>
+      <button type="button" class="btn btn-danger" id="btnCancelConfirm">Confirmar cancelamento</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
+import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDQgXb5Smvd0C8cslsq0WPIaahweH2Ox5E',
+  authDomain: 'logrotas-85e7e.firebaseapp.com',
+  projectId: 'logrotas-85e7e',
+  storageBucket: 'logrotas-85e7e.firebasestorage.app',
+  messagingSenderId: '404332371972',
+  appId: '1:404332371972:web:fb1234a8c8294536121551'
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const functions = getFunctions(app, 'southamerica-east1');
+const cancelAsaasSubscription = httpsCallable(functions, 'cancelAsaasSubscription');
+
+let currentUserData = null;
+
+const pageLoading = document.getElementById('pageLoading');
+const pageContent = document.getElementById('pageContent');
+const pageFeedback = document.getElementById('pageFeedback');
+const subscriptionList = document.getElementById('subscriptionList');
+const cancelSection = document.getElementById('cancelSection');
+const cancelModal = document.getElementById('cancelModal');
+const cancelModalFeedback = document.getElementById('cancelModalFeedback');
+const btnCancelConfirm = document.getElementById('btnCancelConfirm');
+
+function showPageFeedback(type, message) {
+  pageFeedback.className = 'feedback ' + type;
+  pageFeedback.textContent = message;
+  pageFeedback.style.display = 'block';
+}
+
+function clearPageFeedback() {
+  pageFeedback.className = 'feedback';
+  pageFeedback.textContent = '';
+  pageFeedback.style.display = 'none';
+}
+
+function formatPlanType(planType) {
+  const map = { FRETE: 'Plano Frete', COMPLETO: 'Plano Completo' };
+  return map[String(planType || '').toUpperCase()] || '—';
+}
+
+function formatSubscriptionStatus(status) {
+  const map = {
+    ativo: 'Ativa',
+    pending: 'Pendente',
+    cancelado: 'Cancelada',
+    vencido: 'Vencida',
+    falhou: 'Falhou'
+  };
+  return map[String(status || '').toLowerCase()] || (status ? String(status) : '—');
+}
+
+function formatDate(value) {
+  if (!value) return null;
+  if (typeof value.toDate === 'function') {
+    return value.toDate().toLocaleDateString('pt-BR');
+  }
+  if (value.seconds) {
+    return new Date(value.seconds * 1000).toLocaleDateString('pt-BR');
+  }
+  const date = new Date(value);
+  if (!Number.isNaN(date.getTime())) {
+    return date.toLocaleDateString('pt-BR');
+  }
+  return String(value);
+}
+
+function addInfoItem(label, value) {
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="label">${label}</span><span class="value">${value}</span>`;
+  subscriptionList.appendChild(li);
+}
+
+function renderSubscription(data) {
+  subscriptionList.innerHTML = '';
+
+  if (data.acessoVitalicio) {
+    addInfoItem('Acesso', '<span class="badge">Acesso vitalício (cortesia)</span>');
+    cancelSection.style.display = 'none';
+    return;
+  }
+
+  if (data.tipoAcesso === 'trial') {
+    addInfoItem('Tipo', 'Período de teste');
+  }
+
+  if (data.planType) {
+    addInfoItem('Plano', formatPlanType(data.planType));
+  }
+
+  if (data.subscriptionStatus) {
+    addInfoItem('Status', formatSubscriptionStatus(data.subscriptionStatus));
+  }
+
+  const validade = formatDate(data.acessoValidoAte);
+  if (validade) {
+    const label = data.tipoAcesso === 'trial' ? 'Válido até' : 'Validade do acesso';
+    addInfoItem(label, validade);
+  }
+
+  const isActive = String(data.subscriptionStatus || '').toLowerCase() === 'ativo';
+  cancelSection.style.display = isActive ? 'block' : 'none';
+}
+
+function renderUser(data) {
+  document.getElementById('userNome').textContent = data.nome || '—';
+  document.getElementById('userEmail').textContent = data.email || '—';
+  renderSubscription(data);
+}
+
+async function loadUserProfile(uid) {
+  const snap = await getDoc(doc(db, 'users', uid));
+  if (!snap.exists()) {
+    throw new Error('Perfil não encontrado.');
+  }
+  currentUserData = snap.data();
+  renderUser(currentUserData);
+  pageLoading.style.display = 'none';
+  pageContent.style.display = 'block';
+}
+
+function openCancelModal() {
+  cancelModalFeedback.style.display = 'none';
+  cancelModalFeedback.textContent = '';
+  document.getElementById('cancelMotivo').value = '';
+  cancelModal.classList.add('open');
+  cancelModal.setAttribute('aria-hidden', 'false');
+}
+
+function closeCancelModal() {
+  cancelModal.classList.remove('open');
+  cancelModal.setAttribute('aria-hidden', 'true');
+}
+
+async function handleCancelSubscription() {
+  cancelModalFeedback.style.display = 'none';
+  cancelModalFeedback.textContent = '';
+
+  const originalText = btnCancelConfirm.textContent;
+  btnCancelConfirm.disabled = true;
+  btnCancelConfirm.textContent = 'Cancelando...';
+
+  try {
+    await cancelAsaasSubscription();
+    closeCancelModal();
+    showPageFeedback('success', 'Assinatura cancelada.');
+    currentUserData = {
+      ...currentUserData,
+      subscriptionStatus: 'cancelado'
+    };
+    renderSubscription(currentUserData);
+  } catch (err) {
+    console.error('Erro ao cancelar assinatura:', err);
+    cancelModalFeedback.textContent = err?.message || 'Não foi possível cancelar a assinatura. Tente novamente.';
+    cancelModalFeedback.style.display = 'block';
+  } finally {
+    btnCancelConfirm.disabled = false;
+    btnCancelConfirm.textContent = originalText;
+  }
+}
+
+document.getElementById('btnOpenCancel').addEventListener('click', openCancelModal);
+document.getElementById('btnCancelBack').addEventListener('click', closeCancelModal);
+document.getElementById('btnCancelConfirm').addEventListener('click', handleCancelSubscription);
+
+cancelModal.addEventListener('click', (e) => {
+  if (e.target === cancelModal) closeCancelModal();
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    clearPageFeedback();
+    await loadUserProfile(user.uid);
+  } catch (err) {
+    console.error('Erro ao carregar conta:', err);
+    pageLoading.style.display = 'none';
+    showPageFeedback('error', 'Não foi possível carregar os dados da sua conta. Tente novamente em instantes.');
+  }
+});
+</script>
+</body>
+</html>
