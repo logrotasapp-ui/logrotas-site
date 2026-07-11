@@ -63,7 +63,7 @@
   .spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  .feedback{border-radius:10px;padding:14px 16px;font-size:15px;line-height:1.45;margin-bottom:18px}
+  .feedback{border-radius:10px;padding:14px 16px;font-size:15px;line-height:1.45;margin-bottom:18px;display:none}
   .feedback.error{background:#fff0f0;border:1px solid #f5b8b8;color:#8b1a1a}
   .feedback.info{background:#fff8f3;border:1px solid rgba(237,106,44,.3);color:var(--orange-deep)}
 
@@ -112,7 +112,14 @@
   .selo svg{width:16px;height:16px;fill:var(--orange)}
 
   .btn-pagar{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.02em;padding:16px;border-radius:12px;cursor:pointer;transition:background .15s ease,transform .15s ease;margin-top:6px}
-  .btn-pagar:hover{background:var(--orange-deep);transform:translateY(-1px)}
+  .btn-pagar:hover:not(:disabled){background:var(--orange-deep);transform:translateY(-1px)}
+  .btn-pagar:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+  .success-screen{text-align:center;padding:24px 10px}
+  .success-icon{width:74px;height:74px;border-radius:50%;background:#1a8c4a;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 24px rgba(26,140,74,.35)}
+  .success-icon svg{width:38px;height:38px;fill:#fff}
+  .success-screen h2{font-size:28px;font-weight:800;margin-bottom:10px;color:var(--ink)}
+  .success-screen p{color:var(--mute);font-size:16px}
 
   footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
   footer a{color:#9aa6c6;text-decoration:none}
@@ -193,9 +200,11 @@
       </div>
 
       <div id="stateCard" class="state card">
-        <button type="button" class="back-link" id="backFromCard">← Voltar</button>
+        <button type="button" class="back-link" id="backFromCard">← Voltar para formas de pagamento</button>
         <h2>Cartão de Crédito</h2>
+        <div id="cardFeedback" class="feedback error" style="display:none"></div>
 
+        <div id="cardForm">
         <h3>Dados do cartão</h3>
         <div class="field">
           <label for="cardNumero">Número do cartão</label>
@@ -235,6 +244,16 @@
             <input type="tel" id="titularTel" placeholder="(11) 90000-0000" autocomplete="tel">
           </div>
         </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="titularCep">CEP</label>
+            <input type="text" id="titularCep" placeholder="00000-000" inputmode="numeric" maxlength="9" autocomplete="postal-code">
+          </div>
+          <div class="field">
+            <label for="titularNumero">Número do endereço</label>
+            <input type="text" id="titularNumero" placeholder="123">
+          </div>
+        </div>
 
         <div class="selos">
           <span class="selo">
@@ -252,6 +271,17 @@
         </div>
 
         <button type="button" class="btn-pagar" id="btnPagarAgora">PAGAR AGORA</button>
+        </div>
+      </div>
+
+      <div id="stateSuccess" class="state card">
+        <div class="success-screen">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <h2>Pagamento aprovado!</h2>
+          <p>Seu pagamento foi confirmado com sucesso. Você já pode usar o LogRotas.</p>
+        </div>
       </div>
 
     </main>
@@ -316,13 +346,15 @@ const auth = getAuth(app);
 const functions = getFunctions(app, 'southamerica-east1');
 const getFatura = httpsCallable(functions, 'getFatura');
 const getPixQrCode = httpsCallable(functions, 'getPixQrCode');
+const payWithCard = httpsCallable(functions, 'payWithCard');
 
 const states = {
   loading: document.getElementById('stateLoading'),
   error: document.getElementById('stateError'),
   methods: document.getElementById('stateMethods'),
   pix: document.getElementById('statePix'),
-  card: document.getElementById('stateCard')
+  card: document.getElementById('stateCard'),
+  success: document.getElementById('stateSuccess')
 };
 
 let faturaData = null;
@@ -331,6 +363,8 @@ let pixLoaded = false;
 const pixLoading = document.getElementById('pixLoading');
 const pixContent = document.getElementById('pixContent');
 const pixFeedback = document.getElementById('pixFeedback');
+const cardFeedback = document.getElementById('cardFeedback');
+const btnPagarAgora = document.getElementById('btnPagarAgora');
 
 function showState(name) {
   Object.values(states).forEach((el) => el.classList.remove('active'));
@@ -387,6 +421,7 @@ async function loadFatura() {
 
   if (!faturaId) {
     document.getElementById('errorMsg').textContent = 'Link inválido: fatura não informada na URL.';
+    document.getElementById('errorMsg').style.display = 'block';
     showState('error');
     return;
   }
@@ -400,6 +435,7 @@ async function loadFatura() {
     console.error('Erro ao carregar fatura:', err);
     document.getElementById('errorMsg').textContent =
       'Não foi possível carregar esta fatura. Ela pode ter expirado ou o link está incorreto.';
+    document.getElementById('errorMsg').style.display = 'block';
     showState('error');
   }
 }
@@ -409,6 +445,7 @@ async function loadPixQrCode() {
 
   if (!faturaId) {
     document.getElementById('errorMsg').textContent = 'Link inválido: fatura não informada na URL.';
+    document.getElementById('errorMsg').style.display = 'block';
     showState('error');
     return;
   }
@@ -450,9 +487,156 @@ async function loadPixQrCode() {
 }
 
 document.getElementById('btnPix').addEventListener('click', () => loadPixQrCode());
-document.getElementById('btnCartao').addEventListener('click', () => showState('card'));
+document.getElementById('btnCartao').addEventListener('click', () => openCardScreen());
 document.getElementById('backFromPix').addEventListener('click', () => showState('methods'));
 document.getElementById('backFromCard').addEventListener('click', () => showState('methods'));
+
+function prefillTitular() {
+  if (!faturaData) return;
+  const nome = faturaData.comprador?.nome ?? '';
+  const email = faturaData.comprador?.email ?? '';
+  if (nome) document.getElementById('titularNome').value = nome;
+  if (email) document.getElementById('titularEmail').value = email;
+}
+
+function openCardScreen() {
+  cardFeedback.style.display = 'none';
+  cardFeedback.textContent = '';
+  prefillTitular();
+  showState('card');
+}
+
+function parseValidade(value) {
+  const parts = value.trim().split('/');
+  if (parts.length !== 2) return null;
+  const validadeMes = parts[0].replace(/\D/g, '');
+  const validadeAno = parts[1].replace(/\D/g, '');
+  if (validadeMes.length !== 2 || validadeAno.length !== 2) return null;
+  const mesNum = parseInt(validadeMes, 10);
+  if (mesNum < 1 || mesNum > 12) return null;
+  return { validadeMes, validadeAno };
+}
+
+function validateCardForm() {
+  const numero = document.getElementById('cardNumero').value.replace(/\D/g, '');
+  const nome = document.getElementById('cardNome').value.trim();
+  const validade = parseValidade(document.getElementById('cardValidade').value);
+  const cvv = document.getElementById('cardCvv').value.replace(/\D/g, '');
+  const titularNome = document.getElementById('titularNome').value.trim();
+  const titularEmail = document.getElementById('titularEmail').value.trim();
+  const cpfCnpj = document.getElementById('titularCpf').value.replace(/\D/g, '');
+  const telefone = document.getElementById('titularTel').value.replace(/\D/g, '');
+  const cep = document.getElementById('titularCep').value.replace(/\D/g, '');
+  const numeroEndereco = document.getElementById('titularNumero').value.trim();
+
+  if (!numero || numero.length < 13) {
+    return { error: 'Informe o número do cartão.' };
+  }
+  if (!nome) {
+    return { error: 'Informe o nome impresso no cartão.' };
+  }
+  if (!validade) {
+    return { error: 'Informe a validade no formato MM/AA.' };
+  }
+  if (!cvv || cvv.length < 3) {
+    return { error: 'Informe o CVV do cartão.' };
+  }
+  if (!titularNome) {
+    return { error: 'Informe o nome do titular.' };
+  }
+  if (!titularEmail) {
+    return { error: 'Informe o e-mail do titular.' };
+  }
+  if (cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
+    return { error: 'Informe um CPF ou CNPJ válido.' };
+  }
+  if (!telefone || telefone.length < 10) {
+    return { error: 'Informe o telefone do titular.' };
+  }
+  if (cep.length !== 8) {
+    return { error: 'Informe um CEP válido.' };
+  }
+  if (!numeroEndereco) {
+    return { error: 'Informe o número do endereço.' };
+  }
+
+  return {
+    data: {
+      cartao: { numero, nome, validadeMes: validade.validadeMes, validadeAno: validade.validadeAno, cvv },
+      titular: { nome: titularNome, email: titularEmail, cpfCnpj, telefone, cep, numeroEndereco }
+    }
+  };
+}
+
+function showCardError(message) {
+  cardFeedback.textContent = message;
+  cardFeedback.style.display = 'block';
+}
+
+async function fetchRemoteIp() {
+  const res = await fetch('https://api.ipify.org?format=json');
+  const data = await res.json();
+  return data.ip || '';
+}
+
+function getCallableErrorMessage(err) {
+  return err?.message || 'Não foi possível processar o pagamento. Tente novamente.';
+}
+
+async function handlePayWithCard() {
+  cardFeedback.style.display = 'none';
+  cardFeedback.textContent = '';
+
+  const faturaId = getFaturaIdFromUrl();
+  if (!faturaId) {
+    showCardError('Link inválido: fatura não informada na URL.');
+    return;
+  }
+
+  const validation = validateCardForm();
+  if (validation.error) {
+    showCardError(validation.error);
+    return;
+  }
+
+  const originalText = btnPagarAgora.textContent;
+  btnPagarAgora.disabled = true;
+  btnPagarAgora.textContent = 'Processando...';
+
+  try {
+    const remoteIp = await fetchRemoteIp();
+    if (!remoteIp) {
+      throw new Error('Não foi possível obter o IP para processar o pagamento.');
+    }
+
+    const result = await payWithCard({
+      faturaId,
+      cartao: validation.data.cartao,
+      titular: validation.data.titular,
+      remoteIp
+    });
+
+    if (result.data?.success && result.data?.status === 'CONFIRMED') {
+      showState('success');
+      return;
+    }
+
+    showCardError('Pagamento não confirmado. Verifique os dados do cartão ou tente outra forma de pagamento.');
+  } catch (err) {
+    console.error('Erro no pagamento com cartão:', err);
+    showCardError(getCallableErrorMessage(err));
+  } finally {
+    btnPagarAgora.disabled = false;
+    btnPagarAgora.textContent = originalText;
+  }
+}
+
+document.getElementById('titularCep').addEventListener('input', (e) => {
+  const digits = e.target.value.replace(/\D/g, '').slice(0, 8);
+  e.target.value = digits.length > 5
+    ? `${digits.slice(0, 5)}-${digits.slice(5)}`
+    : digits;
+});
 
 document.getElementById('btnCopiarPix').addEventListener('click', async () => {
   const input = document.getElementById('pixCopiaCola');
@@ -468,9 +652,7 @@ document.getElementById('btnCopiarPix').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('btnPagarAgora').addEventListener('click', () => {
-  // lógica de pagamento com cartão virá depois
-});
+document.getElementById('btnPagarAgora').addEventListener('click', () => handlePayWithCard());
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
