@@ -343,23 +343,17 @@ function formatDate(value) {
   return date.toLocaleDateString('pt-BR');
 }
 
-function formatPlano(plano) {
-  if (!plano) return '—';
-  const map = { FRETE: 'Frete', COMPLETO: 'Completo', GRATIS: 'Grátis', GRÁTIS: 'Grátis' };
-  return map[String(plano).toUpperCase()] || plano;
-}
-
 function fillFatura(data) {
-  const numero = data.numero ?? data.numeroFatura ?? data.id ?? '—';
-  const valor = data.valor ?? data.value ?? data.amount;
-  const vencimento = data.vencimento ?? data.dueDate ?? data.vencimentoEm;
-  const plano = data.plano ?? data.plan ?? data.planType;
-  const nome = data.nome ?? data.name ?? data.buyerName ?? '—';
-  const email = data.email ?? data.buyerEmail ?? '—';
+  const numero = data.numeroFatura ?? '—';
+  const valor = data.valor;
+  const vencimento = data.vencimento;
+  const plano = data.descricao ?? '—';
+  const nome = data.comprador?.nome ?? '—';
+  const email = data.comprador?.email ?? '—';
   const valorFmt = formatMoney(valor);
 
   document.getElementById('resNumero').textContent = numero;
-  document.getElementById('resPlano').textContent = formatPlano(plano);
+  document.getElementById('resPlano').textContent = plano;
   document.getElementById('resVencimento').textContent = formatDate(vencimento);
   document.getElementById('resValor').textContent = valorFmt;
   document.getElementById('resNome').textContent = nome;
@@ -368,7 +362,7 @@ function fillFatura(data) {
   document.getElementById('mainNumero').textContent = 'Fatura ' + numero;
   document.getElementById('mainValor').textContent = valorFmt;
   document.getElementById('mainMeta').textContent =
-    'Vencimento: ' + formatDate(vencimento) + ' · Plano: ' + formatPlano(plano);
+    'Vencimento: ' + formatDate(vencimento) + ' · Plano: ' + plano;
 
   const titularNome = document.getElementById('titularNome');
   const titularEmail = document.getElementById('titularEmail');
