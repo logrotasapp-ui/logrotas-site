@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Pagamento</title>
+<meta name="description" content="Pague sua fatura LogRotas com Pix ou cartão de crédito.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
+    --paper:#F6F7F9;--ink:#1b2746;--mute:#616e90;--line:#e3e7ef;--white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
+
+  header{position:sticky;top:0;z-index:50;background:var(--asphalt)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .voltar{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
+  .voltar:hover{color:var(--orange)}
+  .brand{text-align:center}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none;display:block}
+  .logo b{color:var(--orange)}
+  .tagline{display:block;font-size:12px;color:#9aa6c6;letter-spacing:.04em;margin-top:1px;font-weight:500}
+  .faixa-laranja{height:4px;background:linear-gradient(90deg,var(--orange),var(--orange-deep))}
+
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 22px}
+  .page{padding:28px 0 48px}
+  .page-grid{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
+  @media(min-width:900px){.page-grid{grid-template-columns:1fr 340px;gap:28px}}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 24px;box-shadow:0 8px 24px rgba(21,34,74,.05)}
+  .card h2{font-size:24px;font-weight:700;margin-bottom:16px}
+  .card h3{font-size:18px;font-weight:700;margin-bottom:12px;color:var(--asphalt)}
+  .card + .card{margin-top:0}
+
+  .sidebar{display:flex;flex-direction:column;gap:18px}
+  @media(min-width:900px){.sidebar{position:sticky;top:82px}}
+
+  .resumo-list{list-style:none}
+  .resumo-list li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+  .resumo-list li:last-child{border-bottom:none}
+  .resumo-list .label{color:var(--mute)}
+  .resumo-list .value{font-weight:600;text-align:right}
+  .resumo-list .valor-destaque{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;color:var(--ink)}
+
+  .comprador p{font-size:15px;margin-bottom:8px;color:var(--ink)}
+  .comprador .label{color:var(--mute);font-size:13px;display:block;margin-bottom:2px}
+
+  .ajuda{text-align:center}
+  .ajuda h3{margin-bottom:18px}
+  .ajuda-items{display:flex;flex-direction:column;gap:16px;align-items:center}
+  .ajuda-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .ajuda-label{font-size:13px;color:var(--mute);font-weight:600;letter-spacing:.02em}
+  .ajuda-item a,.ajuda-item span{font-size:15px;color:var(--ink);font-weight:600}
+  .ajuda a{color:var(--orange);text-decoration:none}
+  .ajuda a:hover{text-decoration:underline}
+
+  .state{display:none}
+  .state.active{display:block}
+
+  .loading{text-align:center;padding:40px 10px;color:var(--mute)}
+  .spinner{width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--orange);border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .feedback{border-radius:10px;padding:14px 16px;font-size:15px;line-height:1.45;margin-bottom:18px}
+  .feedback.error{background:#fff0f0;border:1px solid #f5b8b8;color:#8b1a1a}
+  .feedback.info{background:#fff8f3;border:1px solid rgba(237,106,44,.3);color:var(--orange-deep)}
+
+  .fatura-top{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .fatura-top .numero{font-size:14px;color:var(--mute);margin-bottom:6px}
+  .fatura-top .titulo{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;margin-bottom:4px}
+  .fatura-top .meta{font-size:15px;color:var(--mute)}
+
+  .pay-option{display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px;cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease;font-family:'Barlow',sans-serif;text-align:left}
+  .pay-option:hover{border-color:var(--orange);box-shadow:0 4px 14px rgba(21,34,74,.08)}
+  .pay-option-icon{width:42px;height:42px;border-radius:10px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;color:var(--asphalt);flex-shrink:0}
+  .pay-option-text{flex:1}
+  .pay-option-text strong{display:block;font-size:17px;color:var(--ink);margin-bottom:2px}
+  .pay-option-text span{font-size:14px;color:var(--mute)}
+  .pay-option-arrow{font-size:22px;color:var(--orange);font-weight:700}
+
+  .back-link{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--mute);font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:18px;padding:0;transition:color .15s ease}
+  .back-link:hover{color:var(--orange)}
+
+  .steps{list-style:none;counter-reset:step;margin-bottom:22px}
+  .steps li{counter-increment:step;display:flex;gap:12px;margin-bottom:12px;font-size:15px;color:var(--ink)}
+  .steps li::before{content:counter(step);flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--asphalt);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+
+  .qr-box{width:220px;height:220px;margin:0 auto 20px;border:2px dashed var(--line);border-radius:14px;background:var(--paper);display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;color:var(--mute);font-size:14px}
+
+  .pix-code{display:flex;gap:8px;margin-bottom:16px}
+  .pix-code input{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--ink);background:#fff}
+  .pix-code input:focus{outline:none;border-color:var(--orange)}
+  .btn-copy{flex-shrink:0;background:var(--asphalt);color:#fff;border:none;border-radius:10px;padding:0 18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .15s ease}
+  .btn-copy:hover{background:var(--asphalt-2)}
+
+  .aguardando{display:flex;align-items:center;gap:10px;background:#fff8f3;border:1px solid rgba(237,106,44,.25);border-radius:10px;padding:12px 14px;font-size:14.5px;color:var(--orange-deep)}
+  .aguardando .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:pulse 1.4s ease infinite}
+  @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(--ink)}
+  .field input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:16px;color:var(--ink);background:#fff}
+  .field input:focus{outline:none;border-color:var(--orange)}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:480px){.field-row{grid-template-columns:1fr}}
+
+  .selos{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .selo{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--mute);font-weight:600}
+  .selo svg{width:16px;height:16px;fill:var(--orange)}
+
+  .btn-pagar{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;letter-spacing:.02em;padding:16px;border-radius:12px;cursor:pointer;transition:background .15s ease,transform .15s ease;margin-top:6px}
+  .btn-pagar:hover{background:var(--orange-deep);transform:translateY(-1px)}
+
+  footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
+  footer a{color:#9aa6c6;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="assinar.html" class="voltar">← Voltar</a>
+    <div class="brand">
+      <a href="index.html" class="logo">Log<b>Rotas</b></a>
+      <span class="tagline">Inteligência em Logística</span>
+    </div>
+    <span style="width:72px"></span>
+  </nav>
+</header>
+<div class="faixa-laranja"></div>
+
+<div class="wrap page">
+  <div class="page-grid">
+
+    <main class="main-col">
+
+      <div id="stateLoading" class="state active card">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Carregando fatura...</p>
+        </div>
+      </div>
+
+      <div id="stateError" class="state card">
+        <div id="errorMsg" class="feedback error"></div>
+        <p style="color:var(--mute);font-size:15px">Verifique o link recebido ou entre em contato com o suporte.</p>
+      </div>
+
+      <div id="stateMethods" class="state card">
+        <div class="fatura-top">
+          <div class="numero" id="mainNumero">Fatura —</div>
+          <div class="titulo" id="mainValor">—</div>
+          <div class="meta" id="mainMeta">Vencimento: — · Plano: —</div>
+        </div>
+        <h2>Selecione a Forma de Pagamento</h2>
+        <button type="button" class="pay-option" id="btnPix">
+          <span class="pay-option-icon">PIX</span>
+          <span class="pay-option-text">
+            <strong>Pix</strong>
+            <span>Aprovação imediata após o pagamento</span>
+          </span>
+          <span class="pay-option-arrow">›</span>
+        </button>
+        <button type="button" class="pay-option" id="btnCartao">
+          <span class="pay-option-icon">💳</span>
+          <span class="pay-option-text">
+            <strong>Cartão de Crédito</strong>
+            <span>Parcelamento em até 12x no cartão</span>
+          </span>
+          <span class="pay-option-arrow">›</span>
+        </button>
+      </div>
+
+      <div id="statePix" class="state card">
+        <button type="button" class="back-link" id="backFromPix">← Voltar</button>
+        <h2>Pagamento via Pix</h2>
+        <h3>Como pagar</h3>
+        <ol class="steps">
+          <li>Abra o app do seu banco ou carteira digital</li>
+          <li>Escolha pagar com Pix QR Code ou Pix Copia e Cola</li>
+          <li>Escaneie o código abaixo ou cole a chave</li>
+          <li>Confirme o pagamento — a confirmação é automática</li>
+        </ol>
+        <div class="qr-box" id="qrPlaceholder">
+          QR Code<br>em breve
+        </div>
+        <div class="pix-code">
+          <input type="text" id="pixCopiaCola" readonly value="00020126580014BR.GOV.BCB.PIX0136placeholder-copia-e-cola-em-breve520400005303986540510.005802BR5925LogRotas Pagamentos6009SAO PAULO62070503***6304XXXX">
+          <button type="button" class="btn-copy" id="btnCopiarPix">Copiar</button>
+        </div>
+        <div class="aguardando">
+          <span class="dot"></span>
+          Aguardando pagamento
+        </div>
+      </div>
+
+      <div id="stateCard" class="state card">
+        <button type="button" class="back-link" id="backFromCard">← Voltar</button>
+        <h2>Cartão de Crédito</h2>
+
+        <h3>Dados do cartão</h3>
+        <div class="field">
+          <label for="cardNumero">Número do cartão</label>
+          <input type="text" id="cardNumero" placeholder="0000 0000 0000 0000" inputmode="numeric" autocomplete="cc-number">
+        </div>
+        <div class="field">
+          <label for="cardNome">Nome impresso no cartão</label>
+          <input type="text" id="cardNome" placeholder="Como está no cartão" autocomplete="cc-name">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="cardValidade">Validade</label>
+            <input type="text" id="cardValidade" placeholder="MM/AA" inputmode="numeric" autocomplete="cc-exp">
+          </div>
+          <div class="field">
+            <label for="cardCvv">CVV</label>
+            <input type="text" id="cardCvv" placeholder="000" inputmode="numeric" autocomplete="cc-csc">
+          </div>
+        </div>
+
+        <h3 style="margin-top:22px">Dados do titular</h3>
+        <div class="field">
+          <label for="titularNome">Nome completo</label>
+          <input type="text" id="titularNome" placeholder="Nome do titular">
+        </div>
+        <div class="field">
+          <label for="titularEmail">E-mail</label>
+          <input type="email" id="titularEmail" placeholder="email@exemplo.com" autocomplete="email">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="titularCpf">CPF</label>
+            <input type="text" id="titularCpf" placeholder="000.000.000-00" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="titularTel">Telefone</label>
+            <input type="tel" id="titularTel" placeholder="(11) 90000-0000" autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="selos">
+          <span class="selo">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 17.93c-3.95-1.19-7-5.01-7-9.93V6.3l8-3.56 8 3.56V9c0 4.92-3.05 8.74-7 9.93V18h-1v.93z"/></svg>
+            Pagamento seguro
+          </span>
+          <span class="selo">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            Dados criptografados
+          </span>
+          <span class="selo">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-5-5 1.41-1.41L11 14.17l7.59-7.59L20 8l-9 9z"/></svg>
+            Ambiente protegido
+          </span>
+        </div>
+
+        <button type="button" class="btn-pagar" id="btnPagarAgora">PAGAR AGORA</button>
+      </div>
+
+    </main>
+
+    <aside class="sidebar">
+      <div class="card">
+        <h3>Resumo da Fatura</h3>
+        <ul class="resumo-list">
+          <li><span class="label">Nº fatura</span><span class="value" id="resNumero">—</span></li>
+          <li><span class="label">Plano</span><span class="value" id="resPlano">—</span></li>
+          <li><span class="label">Vencimento</span><span class="value" id="resVencimento">—</span></li>
+          <li><span class="label">Valor</span><span class="value valor-destaque" id="resValor">—</span></li>
+        </ul>
+      </div>
+
+      <div class="card comprador">
+        <h3>Dados do Comprador</h3>
+        <p><span class="label">Nome</span><span id="resNome">—</span></p>
+        <p><span class="label">E-mail</span><span id="resEmail">—</span></p>
+      </div>
+
+      <div class="card ajuda">
+        <h3>Precisa de ajuda?</h3>
+        <div class="ajuda-items">
+          <div class="ajuda-item">
+            <span class="ajuda-label">E-mail</span>
+            <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a>
+          </div>
+          <div class="ajuda-item">
+            <span class="ajuda-label">Horário de atendimento</span>
+            <span>Seg a Sex, 08h às 18h</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">© 2026 LogRotas</div>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDQgXb5Smvd0C8cslsq0WPIaahweH2Ox5E',
+  authDomain: 'logrotas-85e7e.firebaseapp.com',
+  projectId: 'logrotas-85e7e',
+  storageBucket: 'logrotas-85e7e.firebasestorage.app',
+  messagingSenderId: '404332371972',
+  appId: '1:404332371972:web:fb1234a8c8294536121551'
+};
+
+const app = initializeApp(firebaseConfig);
+const functions = getFunctions(app, 'southamerica-east1');
+const getFatura = httpsCallable(functions, 'getFatura');
+
+const states = {
+  loading: document.getElementById('stateLoading'),
+  error: document.getElementById('stateError'),
+  methods: document.getElementById('stateMethods'),
+  pix: document.getElementById('statePix'),
+  card: document.getElementById('stateCard')
+};
+
+let faturaData = null;
+
+function showState(name) {
+  Object.values(states).forEach((el) => el.classList.remove('active'));
+  if (states[name]) states[name].classList.add('active');
+}
+
+function formatMoney(value) {
+  const num = Number(value);
+  if (Number.isNaN(num)) return '—';
+  return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function formatDate(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleDateString('pt-BR');
+}
+
+function formatPlano(plano) {
+  if (!plano) return '—';
+  const map = { FRETE: 'Frete', COMPLETO: 'Completo', GRATIS: 'Grátis', GRÁTIS: 'Grátis' };
+  return map[String(plano).toUpperCase()] || plano;
+}
+
+function fillFatura(data) {
+  const numero = data.numero ?? data.numeroFatura ?? data.id ?? '—';
+  const valor = data.valor ?? data.value ?? data.amount;
+  const vencimento = data.vencimento ?? data.dueDate ?? data.vencimentoEm;
+  const plano = data.plano ?? data.plan ?? data.planType;
+  const nome = data.nome ?? data.name ?? data.buyerName ?? '—';
+  const email = data.email ?? data.buyerEmail ?? '—';
+  const valorFmt = formatMoney(valor);
+
+  document.getElementById('resNumero').textContent = numero;
+  document.getElementById('resPlano').textContent = formatPlano(plano);
+  document.getElementById('resVencimento').textContent = formatDate(vencimento);
+  document.getElementById('resValor').textContent = valorFmt;
+  document.getElementById('resNome').textContent = nome;
+  document.getElementById('resEmail').textContent = email;
+
+  document.getElementById('mainNumero').textContent = 'Fatura ' + numero;
+  document.getElementById('mainValor').textContent = valorFmt;
+  document.getElementById('mainMeta').textContent =
+    'Vencimento: ' + formatDate(vencimento) + ' · Plano: ' + formatPlano(plano);
+
+  const titularNome = document.getElementById('titularNome');
+  const titularEmail = document.getElementById('titularEmail');
+  if (titularNome && nome !== '—') titularNome.value = nome;
+  if (titularEmail && email !== '—') titularEmail.value = email;
+}
+
+function getFaturaIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('fatura');
+}
+
+async function loadFatura() {
+  const faturaId = getFaturaIdFromUrl();
+
+  if (!faturaId) {
+    document.getElementById('errorMsg').textContent = 'Link inválido: fatura não informada na URL.';
+    showState('error');
+    return;
+  }
+
+  try {
+    const result = await getFatura({ faturaId });
+    faturaData = result.data;
+    fillFatura(faturaData);
+    showState('methods');
+  } catch (err) {
+    console.error('Erro ao carregar fatura:', err);
+    document.getElementById('errorMsg').textContent =
+      'Não foi possível carregar esta fatura. Ela pode ter expirado ou o link está incorreto.';
+    showState('error');
+  }
+}
+
+document.getElementById('btnPix').addEventListener('click', () => showState('pix'));
+document.getElementById('btnCartao').addEventListener('click', () => showState('card'));
+document.getElementById('backFromPix').addEventListener('click', () => showState('methods'));
+document.getElementById('backFromCard').addEventListener('click', () => showState('methods'));
+
+document.getElementById('btnCopiarPix').addEventListener('click', async () => {
+  const input = document.getElementById('pixCopiaCola');
+  try {
+    await navigator.clipboard.writeText(input.value);
+    const btn = document.getElementById('btnCopiarPix');
+    const original = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  } catch {
+    input.select();
+    document.execCommand('copy');
+  }
+});
+
+document.getElementById('btnPagarAgora').addEventListener('click', () => {
+  // lógica de pagamento com cartão virá depois
+});
+
+loadFatura();
+</script>
+</body>
+</html>
