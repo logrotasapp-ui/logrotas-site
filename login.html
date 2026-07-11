@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogRotas — Entrar</title>
+<meta name="description" content="Entre na sua conta LogRotas com e-mail e senha.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
+    --paper:#F6F7F9;--ink:#1b2746;--mute:#616e90;--line:#e3e7ef;--white:#ffffff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
+  .wrap{width:100%;max-width:480px;margin:0 auto;padding:0 22px}
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none}
+  .logo b{color:var(--orange)}
+  .voltar{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
+  .voltar:hover{color:var(--orange)}
+
+  .hero{background:var(--asphalt);color:#fff;padding:40px 0 30px;text-align:center}
+  .hero h1{font-size:34px;font-weight:800;margin-bottom:8px}
+  .hero p{font-size:16px;color:#c5cde3;max-width:360px;margin:0 auto}
+
+  .formcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 26px;margin:30px auto 20px;box-shadow:0 10px 30px rgba(21,34,74,.06)}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-weight:600;font-size:15px;margin-bottom:6px;color:var(--ink)}
+  .field input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:13px 14px;font-family:'Barlow',sans-serif;font-size:16px;color:var(--ink);transition:border-color .15s ease;background:#fff}
+  .field input:focus{outline:none;border-color:var(--orange)}
+
+  .btn{width:100%;background:var(--orange);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;letter-spacing:.02em;padding:16px;border-radius:12px;cursor:pointer;transition:background .15s ease,transform .15s ease;margin-top:6px}
+  .btn:hover:not(:disabled){background:var(--orange-deep);transform:translateY(-1px)}
+  .btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+  .feedback{border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:15px;line-height:1.45;display:none}
+  .feedback.error{display:block;background:#fff0f0;border:1px solid #f5b8b8;color:#8b1a1a}
+
+  .login-link{text-align:center;font-size:15px;color:var(--mute);margin:18px 0 40px}
+  .login-link a{color:var(--orange);text-decoration:none;font-weight:600}
+
+  footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
+  footer a{color:#9aa6c6;text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <nav class="nav">
+    <a href="index.html" class="voltar">← Início</a>
+    <a href="index.html" class="logo">Log<b>Rotas</b></a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Entrar</h1>
+    <p>Use o mesmo e-mail e senha da sua conta LogRotas.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="formcard">
+    <form id="loginForm" novalidate>
+      <div id="feedback" class="feedback" role="alert" aria-live="polite"></div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Sua senha" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn" id="btnSubmit">Entrar</button>
+    </form>
+  </div>
+  <p class="login-link">Ainda não tem conta? <a href="cadastro.html">Criar conta</a></p>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDQgXb5Smvd0C8cslsq0WPIaahweH2Ox5E',
+  authDomain: 'logrotas-85e7e.firebaseapp.com',
+  projectId: 'logrotas-85e7e',
+  storageBucket: 'logrotas-85e7e.firebasestorage.app',
+  messagingSenderId: '404332371972',
+  appId: '1:404332371972:web:fb1234a8c8294536121551'
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const form = document.getElementById('loginForm');
+const feedback = document.getElementById('feedback');
+const btnSubmit = document.getElementById('btnSubmit');
+
+function showError(message) {
+  feedback.className = 'feedback error';
+  feedback.textContent = message;
+}
+
+function clearFeedback() {
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  clearFeedback();
+
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value;
+
+  if (!email || !senha) {
+    showError('Preencha e-mail e senha.');
+    return;
+  }
+
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = 'Entrando…';
+
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+    window.location.href = 'pagamento.html?fatura=854991345';
+  } catch (error) {
+    console.error('Erro no login:', error);
+    showError('E-mail ou senha incorretos.');
+    btnSubmit.disabled = false;
+    btnSubmit.textContent = 'Entrar';
+  }
+});
+</script>
+</body>
+</html>
