@@ -17,15 +17,12 @@
   body{font-family:'Barlow',system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
   h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.04;letter-spacing:-.01em}
 
-  header{position:sticky;top:0;z-index:50;background:var(--asphalt)}
+  header{position:sticky;top:0;z-index:50;background:rgba(21,34,74,.96);backdrop-filter:blur(8px)}
   .nav{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1080px;margin:0 auto;padding:0 22px}
+  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none}
+  .logo b{color:var(--orange)}
   .voltar{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
   .voltar:hover{color:var(--orange)}
-  .brand{text-align:center}
-  .logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:27px;color:#fff;text-decoration:none;display:block}
-  .logo b{color:var(--orange)}
-  .tagline{display:block;font-size:12px;color:#9aa6c6;letter-spacing:.04em;margin-top:1px;font-weight:500}
-  .faixa-laranja{height:4px;background:linear-gradient(90deg,var(--orange),var(--orange-deep))}
 
   .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 22px}
   .page{padding:28px 0 48px}
@@ -38,7 +35,7 @@
   .card + .card{margin-top:0}
 
   .sidebar{display:flex;flex-direction:column;gap:18px}
-  @media(min-width:900px){.sidebar{position:sticky;top:82px}}
+  @media(min-width:900px){.sidebar{position:sticky;top:74px}}
 
   .resumo-list{list-style:none}
   .resumo-list li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
@@ -125,14 +122,9 @@
 <header>
   <nav class="nav">
     <a href="assinar.html" class="voltar">← Voltar</a>
-    <div class="brand">
-      <a href="index.html" class="logo">Log<b>Rotas</b></a>
-      <span class="tagline">Inteligência em Logística</span>
-    </div>
-    <span style="width:72px"></span>
+    <a href="index.html" class="logo">Log<b>Rotas</b></a>
   </nav>
 </header>
-<div class="faixa-laranja"></div>
 
 <div class="wrap page">
   <div class="page-grid">
@@ -299,7 +291,9 @@
 </div>
 
 <footer>
-  <div class="wrap">© 2026 LogRotas</div>
+  <div class="wrap">
+    <a href="mailto:suporte@logrotas.com.br">suporte@logrotas.com.br</a> · © 2026 LogRotas
+  </div>
 </footer>
 
 <script type="module">
