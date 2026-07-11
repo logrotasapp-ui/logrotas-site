@@ -135,7 +135,7 @@ form.addEventListener('submit', async (event) => {
 
   try {
     await signInWithEmailAndPassword(auth, email, senha);
-    window.location.href = 'pagamento.html?fatura=854991345';
+    window.location.href = 'minhaconta.html';
   } catch (error) {
     console.error('Erro no login:', error);
     showError('E-mail ou senha incorretos.');
