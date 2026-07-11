@@ -87,7 +87,8 @@
   .steps li{counter-increment:step;display:flex;gap:12px;margin-bottom:12px;font-size:15px;color:var(--ink)}
   .steps li::before{content:counter(step);flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--asphalt);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
 
-  .qr-box{width:220px;height:220px;margin:0 auto 20px;border:2px dashed var(--line);border-radius:14px;background:var(--paper);display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;color:var(--mute);font-size:14px}
+  .qr-box{width:220px;height:220px;margin:0 auto 20px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px}
+  .qr-box img{display:block;max-width:100%;max-height:100%;border-radius:8px}
 
   .pix-code{display:flex;gap:8px;margin-bottom:16px}
   .pix-code input{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--ink);background:#fff}
@@ -169,25 +170,25 @@
       </div>
 
       <div id="statePix" class="state card">
-        <button type="button" class="back-link" id="backFromPix">← Voltar</button>
-        <h2>Pagamento via Pix</h2>
-        <h3>Como pagar</h3>
-        <ol class="steps">
-          <li>Abra o app do seu banco ou carteira digital</li>
-          <li>Escolha pagar com Pix QR Code ou Pix Copia e Cola</li>
-          <li>Escaneie o código abaixo ou cole a chave</li>
-          <li>Confirme o pagamento — a confirmação é automática</li>
-        </ol>
-        <div class="qr-box" id="qrPlaceholder">
-          QR Code<br>em breve
+        <button type="button" class="back-link" id="backFromPix">← Voltar para formas de pagamento</button>
+        <h2>Pagamento com PIX</h2>
+        <div id="pixFeedback" class="feedback error" style="display:none"></div>
+        <div id="pixLoading" class="loading">
+          <div class="spinner"></div>
+          <p>Gerando QR Code...</p>
         </div>
-        <div class="pix-code">
-          <input type="text" id="pixCopiaCola" readonly value="00020126580014BR.GOV.BCB.PIX0136placeholder-copia-e-cola-em-breve520400005303986540510.005802BR5925LogRotas Pagamentos6009SAO PAULO62070503***6304XXXX">
-          <button type="button" class="btn-copy" id="btnCopiarPix">Copiar</button>
-        </div>
-        <div class="aguardando">
-          <span class="dot"></span>
-          Aguardando pagamento
+        <div id="pixContent" style="display:none">
+          <div class="qr-box">
+            <img id="qrImage" alt="QR Code Pix">
+          </div>
+          <div class="pix-code">
+            <input type="text" id="pixCopiaCola" readonly>
+            <button type="button" class="btn-copy" id="btnCopiarPix">Copiar</button>
+          </div>
+          <div class="aguardando">
+            <span class="dot"></span>
+            Aguardando pagamento...
+          </div>
         </div>
       </div>
 
@@ -314,6 +315,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const functions = getFunctions(app, 'southamerica-east1');
 const getFatura = httpsCallable(functions, 'getFatura');
+const getPixQrCode = httpsCallable(functions, 'getPixQrCode');
 
 const states = {
   loading: document.getElementById('stateLoading'),
@@ -324,6 +326,11 @@ const states = {
 };
 
 let faturaData = null;
+let pixLoaded = false;
+
+const pixLoading = document.getElementById('pixLoading');
+const pixContent = document.getElementById('pixContent');
+const pixFeedback = document.getElementById('pixFeedback');
 
 function showState(name) {
   Object.values(states).forEach((el) => el.classList.remove('active'));
@@ -397,7 +404,52 @@ async function loadFatura() {
   }
 }
 
-document.getElementById('btnPix').addEventListener('click', () => showState('pix'));
+async function loadPixQrCode() {
+  const faturaId = getFaturaIdFromUrl();
+
+  if (!faturaId) {
+    document.getElementById('errorMsg').textContent = 'Link inválido: fatura não informada na URL.';
+    showState('error');
+    return;
+  }
+
+  showState('pix');
+  pixFeedback.style.display = 'none';
+  pixFeedback.textContent = '';
+
+  if (pixLoaded) {
+    pixLoading.style.display = 'none';
+    pixContent.style.display = 'block';
+    return;
+  }
+
+  pixLoading.style.display = 'block';
+  pixContent.style.display = 'none';
+
+  try {
+    const result = await getPixQrCode({ faturaId });
+    const { encodedImage, payload } = result.data;
+
+    if (!encodedImage || !payload) {
+      throw new Error('Resposta do Pix incompleta.');
+    }
+
+    document.getElementById('qrImage').src = `data:image/png;base64,${encodedImage}`;
+    document.getElementById('pixCopiaCola').value = payload;
+
+    pixLoading.style.display = 'none';
+    pixContent.style.display = 'block';
+    pixLoaded = true;
+  } catch (err) {
+    console.error('Erro ao gerar Pix:', err);
+    pixLoading.style.display = 'none';
+    pixFeedback.textContent =
+      'Não foi possível gerar o QR Code Pix. Tente novamente em instantes ou escolha outra forma de pagamento.';
+    pixFeedback.style.display = 'block';
+  }
+}
+
+document.getElementById('btnPix').addEventListener('click', () => loadPixQrCode());
 document.getElementById('btnCartao').addEventListener('click', () => showState('card'));
 document.getElementById('backFromPix').addEventListener('click', () => showState('methods'));
 document.getElementById('backFromCard').addEventListener('click', () => showState('methods'));
