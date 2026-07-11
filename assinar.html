@@ -63,9 +63,14 @@
 
   footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
   footer a{color:#9aa6c6;text-decoration:none}
+
+  .auth-pending [data-auth="guest"],
+  .auth-pending [data-auth="user"],
+  .auth-logged-in [data-auth="guest"],
+  .auth-logged-out [data-auth="user"]{display:none!important}
 </style>
 </head>
-<body>
+<body class="auth-pending">
 <header>
   <nav class="nav">
     <a href="index.html" class="voltar">← Início</a>
@@ -99,7 +104,8 @@
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Documentos (uso limitado)</li>
         <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Fechar meu dia (uso limitado)</li>
       </ul>
-      <a href="cadastro.html" class="btn btn-ghost">Começar grátis</a>
+      <a href="cadastro.html" class="btn btn-ghost" data-auth="guest">Começar grátis</a>
+      <a href="minhaconta.html" class="btn btn-ghost" data-auth="user">Ir para Minha Conta</a>
     </div>
 
     <!-- FRETE -->
@@ -173,7 +179,7 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js';
 import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js';
 
 const firebaseConfig = {
@@ -252,8 +258,7 @@ if (btnCompleto) {
     handlePlanClick('COMPLETO', btnCompleto);
   });
 }
-
-onAuthStateChanged(auth, () => {});
 </script>
+<script type="module" src="auth-ui.js"></script>
 </body>
 </html>

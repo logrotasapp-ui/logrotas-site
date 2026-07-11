@@ -69,6 +69,12 @@
   .nav a.planos{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:#aeb9d8;text-decoration:none;letter-spacing:.02em;transition:color .15s ease}
   .nav a.planos:hover{color:var(--orange)}
 
+  /* auth-aware nav (sem piscada) */
+  .auth-pending [data-auth="guest"],
+  .auth-pending [data-auth="user"],
+  .auth-logged-in [data-auth="guest"],
+  .auth-logged-out [data-auth="user"]{display:none!important}
+
   /* ---------- HERO ---------- */
   .hero{position:relative;background:var(--asphalt);color:#fff;padding:64px 0 92px;overflow:hidden}
   .hero::before{
@@ -240,7 +246,7 @@
   a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:3px;border-radius:6px}
 </style>
 </head>
-<body>
+<body class="auth-pending">
 
 <header>
   <div class="wrap nav">
@@ -262,12 +268,14 @@
   </div>
   <a href="index.html">Início</a>
   <a href="assinar.html">Planos</a>
-  <a href="cadastro.html">Criar conta grátis</a>
-  <a href="login.html">Entrar</a>
+  <a href="cadastro.html" data-auth="guest">Criar conta grátis</a>
+  <a href="login.html" data-auth="guest">Entrar</a>
   <a href="minhaconta.html">Minha Conta</a>
   <a href="termos.html">Termos de Uso</a>
   <a href="privacidade.html">Política de Privacidade</a>
-  <a href="cadastro.html" class="destaque">Começar grátis →</a>
+  <a href="#" data-auth="user" data-auth-action="logout">Sair</a>
+  <a href="cadastro.html" class="destaque" data-auth="guest">Começar grátis →</a>
+  <a href="minhaconta.html" class="destaque" data-auth="user">Ir para Minha Conta</a>
   <div class="mp-mini">Sua rota, seu controle.</div>
 </nav>
 
@@ -277,7 +285,8 @@
     <span class="eyebrow">Feito por motorista, pra motorista</span>
     <h1>Sua rota, seu controle. Seu frete, <span class="orange">no preço certo.</span></h1>
     <p class="sub">O LogRotas faz a conta que você não tem tempo de fazer na estrada: combustível, pedágio, distância e o valor justo do frete.</p>
-    <a href="cadastro.html" class="btn">Começar grátis por 14 dias →</a>
+    <a href="cadastro.html" class="btn" data-auth="guest">Começar grátis por 14 dias →</a>
+    <a href="minhaconta.html" class="btn" data-auth="user">Ir para Minha Conta →</a>
     <div class="reassure"><b>Sem cartão. Sem pegadinha.</b> É só testar.</div>
   </div>
 </section>
@@ -421,7 +430,8 @@
     <div class="tag">Quem fez</div>
     <h2>Feito por motorista, pra motorista.</h2>
     <p>O LogRotas não nasceu num escritório. Nasceu na estrada, da mão de quem vive de dirigir e cansou de ver colega perdendo dinheiro por falta de ferramenta. Cada função foi pensada pra resolver um problema de verdade de quem está no volante.</p>
-    <a href="cadastro.html" class="btn">Começar grátis por 14 dias →</a>
+    <a href="cadastro.html" class="btn" data-auth="guest">Começar grátis por 14 dias →</a>
+    <a href="minhaconta.html" class="btn" data-auth="user">Ir para Minha Conta →</a>
   </div>
 </section>
 
@@ -469,6 +479,7 @@
     els.forEach(function(e){io.observe(e);});
   })();
 </script>
+<script type="module" src="auth-ui.js"></script>
 
 </body>
 </html>
