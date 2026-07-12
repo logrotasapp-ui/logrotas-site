@@ -360,6 +360,13 @@ const states = {
 
 let faturaData = null;
 let pixLoaded = false;
+let faturaLoadStarted = false;
+
+const PAY_STORAGE_PREFIX = 'logrotas_pagamento_';
+const CARD_FIELDS = [
+  'cardNumero', 'cardNome', 'cardValidade', 'cardCvv',
+  'titularNome', 'titularEmail', 'titularCpf', 'titularTel', 'titularCep', 'titularNumero'
+];
 
 const pixLoading = document.getElementById('pixLoading');
 const pixContent = document.getElementById('pixContent');
@@ -367,9 +374,123 @@ const pixFeedback = document.getElementById('pixFeedback');
 const cardFeedback = document.getElementById('cardFeedback');
 const btnPagarAgora = document.getElementById('btnPagarAgora');
 
+function getPayStorageKey() {
+  const faturaId = getFaturaIdFromUrl();
+  return faturaId ? `${PAY_STORAGE_PREFIX}${faturaId}` : null;
+}
+
+function getPayState() {
+  const key = getPayStorageKey();
+  if (!key) return null;
+  try {
+    const raw = sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function savePayState(partial) {
+  const key = getPayStorageKey();
+  if (!key) return;
+  const current = getPayState() || {};
+  sessionStorage.setItem(key, JSON.stringify({ ...current, ...partial }));
+}
+
+function clearPayStorage() {
+  const key = getPayStorageKey();
+  if (key) sessionStorage.removeItem(key);
+}
+
+function getCurrentScreen() {
+  if (states.pix.classList.contains('active')) return 'pix';
+  if (states.card.classList.contains('active')) return 'cartao';
+  if (states.methods.classList.contains('active')) return 'selecao';
+  return null;
+}
+
+function saveCardForm() {
+  const card = {};
+  CARD_FIELDS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) card[id] = el.value;
+  });
+  savePayState({ card });
+}
+
+function restoreCardForm() {
+  const saved = getPayState();
+  if (!saved?.card) return;
+  CARD_FIELDS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && saved.card[id] !== undefined) el.value = saved.card[id];
+  });
+}
+
+function restorePixContent(savedPix) {
+  document.getElementById('qrImage').src = `data:image/png;base64,${savedPix.encodedImage}`;
+  document.getElementById('pixCopiaCola').value = savedPix.payload;
+  pixLoading.style.display = 'none';
+  pixContent.style.display = 'block';
+  pixLoaded = true;
+}
+
 function showState(name) {
   Object.values(states).forEach((el) => el.classList.remove('active'));
   if (states[name]) states[name].classList.add('active');
+
+  const screenMap = { methods: 'selecao', pix: 'pix', card: 'cartao' };
+  if (screenMap[name]) {
+    savePayState({ screen: screenMap[name] });
+  }
+  if (name === 'success') {
+    clearPayStorage();
+  }
+}
+
+async function restorePaymentScreen() {
+  const saved = getPayState();
+  const screen = saved?.screen || 'selecao';
+
+  if (screen === 'pix') {
+    showState('pix');
+    pixFeedback.style.display = 'none';
+    pixFeedback.textContent = '';
+
+    if (saved.pix?.encodedImage && saved.pix?.payload) {
+      restorePixContent(saved.pix);
+      return;
+    }
+
+    await loadPixQrCode({ skipShowState: true });
+    return;
+  }
+
+  if (screen === 'cartao') {
+    restoreCardForm();
+    cardFeedback.style.display = 'none';
+    cardFeedback.textContent = '';
+    showState('card');
+    return;
+  }
+
+  showState('methods');
+}
+
+function persistCurrentPayState() {
+  const current = getCurrentScreen();
+  if (!current || current === 'selecao') return;
+  savePayState({ screen: current });
+  if (current === 'cartao') saveCardForm();
+}
+
+function syncScreenFromStorage() {
+  if (!faturaData) return;
+  const saved = getPayState();
+  if (!saved?.screen || saved.screen === 'selecao') return;
+  const current = getCurrentScreen();
+  if (current === saved.screen) return;
+  restorePaymentScreen();
 }
 
 function formatMoney(value) {
@@ -431,7 +552,7 @@ async function loadFatura() {
     const result = await getFatura({ faturaId });
     faturaData = result.data;
     fillFatura(faturaData);
-    showState('methods');
+    await restorePaymentScreen();
   } catch (err) {
     console.error('Erro ao carregar fatura:', err);
     document.getElementById('errorMsg').textContent =
@@ -441,7 +562,7 @@ async function loadFatura() {
   }
 }
 
-async function loadPixQrCode() {
+async function loadPixQrCode(options = {}) {
   const faturaId = getFaturaIdFromUrl();
 
   if (!faturaId) {
@@ -451,7 +572,9 @@ async function loadPixQrCode() {
     return;
   }
 
-  showState('pix');
+  if (!options.skipShowState) {
+    showState('pix');
+  }
   pixFeedback.style.display = 'none';
   pixFeedback.textContent = '';
 
@@ -478,6 +601,7 @@ async function loadPixQrCode() {
     pixLoading.style.display = 'none';
     pixContent.style.display = 'block';
     pixLoaded = true;
+    savePayState({ screen: 'pix', pix: { encodedImage, payload } });
   } catch (err) {
     console.error('Erro ao gerar Pix:', err);
     pixLoading.style.display = 'none';
@@ -489,8 +613,15 @@ async function loadPixQrCode() {
 
 document.getElementById('btnPix').addEventListener('click', () => loadPixQrCode());
 document.getElementById('btnCartao').addEventListener('click', () => openCardScreen());
-document.getElementById('backFromPix').addEventListener('click', () => showState('methods'));
-document.getElementById('backFromCard').addEventListener('click', () => showState('methods'));
+document.getElementById('backFromPix').addEventListener('click', () => {
+  pixLoaded = false;
+  savePayState({ screen: 'selecao', pix: null });
+  showState('methods');
+});
+document.getElementById('backFromCard').addEventListener('click', () => {
+  savePayState({ screen: 'selecao', card: null });
+  showState('methods');
+});
 
 function prefillTitular() {
   if (!faturaData) return;
@@ -504,6 +635,7 @@ function openCardScreen() {
   cardFeedback.style.display = 'none';
   cardFeedback.textContent = '';
   prefillTitular();
+  restoreCardForm();
   showState('card');
 }
 
@@ -655,12 +787,44 @@ document.getElementById('btnCopiarPix').addEventListener('click', async () => {
 
 document.getElementById('btnPagarAgora').addEventListener('click', () => handlePayWithCard());
 
+CARD_FIELDS.forEach((id) => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', saveCardForm);
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    persistCurrentPayState();
+    return;
+  }
+  syncScreenFromStorage();
+});
+
+window.addEventListener('pagehide', persistCurrentPayState);
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted || faturaData) {
+    syncScreenFromStorage();
+  }
+});
+
+window.addEventListener('focus', () => {
+  syncScreenFromStorage();
+});
+
 onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = 'login.html';
     return;
   }
-  loadFatura();
+  if (!faturaLoadStarted) {
+    faturaLoadStarted = true;
+    loadFatura();
+    return;
+  }
+  if (faturaData) {
+    syncScreenFromStorage();
+  }
 });
 </script>
 </body>
