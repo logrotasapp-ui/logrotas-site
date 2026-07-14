@@ -13,10 +13,27 @@ const firebaseConfig = {
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+function saudacaoPorHora() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Bom dia';
+  if (h < 18) return 'Boa tarde';
+  return 'Boa noite';
+}
+
 function applyAuthState(user) {
   const body = document.body;
   body.classList.remove('auth-pending', 'auth-logged-in', 'auth-logged-out');
   body.classList.add(user ? 'auth-logged-in' : 'auth-logged-out');
+
+  const saud = document.getElementById('saudacaoMenu');
+  if (saud) {
+    if (user) {
+      const nome = ((user.displayName || '').trim().split(' ')[0]) || '';
+      saud.textContent = nome ? `${saudacaoPorHora()}, ${nome}` : `${saudacaoPorHora()}!`;
+    } else {
+      saud.textContent = '';
+    }
+  }
 }
 
 onAuthStateChanged(auth, applyAuthState);

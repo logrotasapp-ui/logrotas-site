@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="comprovante.js"></script>
 <style>
   :root{
     --asphalt:#15224a;--asphalt-2:#1c2c5e;--orange:#ED6A2C;--orange-deep:#cf551b;
@@ -121,6 +123,9 @@
   .success-icon svg{width:38px;height:38px;fill:#fff}
   .success-screen h2{font-size:28px;font-weight:800;margin-bottom:10px;color:var(--ink)}
   .success-screen p{color:var(--mute);font-size:16px}
+  .btn-comprovante{margin-top:16px;background:#15224a;color:#fff;border:none;border-radius:12px;padding:12px 22px;font-size:15px;font-weight:700;cursor:pointer}
+  .btn-comprovante:hover{background:#1d2c5c}
+  .btn-comprovante:disabled{opacity:.6;cursor:default}
 
   footer{background:var(--asphalt);color:#9aa6c6;padding:26px 0;text-align:center;font-size:14px}
   footer a{color:#9aa6c6;text-decoration:none}
@@ -282,6 +287,7 @@
           </div>
           <h2>Pagamento aprovado!</h2>
           <p>Seu pagamento foi confirmado com sucesso. Você já pode usar o LogRotas.</p>
+          <button type="button" id="btnComprovante" class="btn-comprovante">Baixar comprovante</button>
         </div>
       </div>
 
@@ -810,6 +816,23 @@ window.addEventListener('pageshow', (event) => {
 
 window.addEventListener('focus', () => {
   syncScreenFromStorage();
+});
+
+document.getElementById('btnComprovante')?.addEventListener('click', async () => {
+  const btn = document.getElementById('btnComprovante');
+  try {
+    btn.disabled = true;
+    btn.textContent = 'Gerando...';
+    const faturaId = getFaturaIdFromUrl();
+    const result = await getFatura({ faturaId });
+    window.gerarComprovanteDeFatura(result.data);
+  } catch (e) {
+    console.error('Erro ao gerar comprovante', e);
+    alert('Não foi possível gerar o comprovante agora. Tente novamente.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Baixar comprovante';
+  }
 });
 
 onAuthStateChanged(auth, (user) => {
